@@ -1,0 +1,42 @@
+App.tsx:17 A0                       == includePreJumpInfo
+App.tsx:17 B1                       == includePostJumpInfo
+App.tsx:17 C0                       == useMetric
+App.tsx:17 D000                     == ascendSettings.abbreviateReadings
+App.tsx:17 E111                     == freefallSettings.abbreviateReadings
+App.tsx:17 F111                     == canopySettings.abbreviateReadings
+App.tsx:17 G200020002000            == ascendSettings.announcementFrequency
+App.tsx:17 H100010001000            == freefallSettings.announcementFrequency
+App.tsx:17 I050005000500            == canopySettings.announcementFrequency
+App.tsx:17 J111                     == ascendSettings.announceAltitude
+App.tsx:17 K111                     == ascendSettings.announceSpeed
+App.tsx:17 L111                     == freefallSettings.announceAltitude
+App.tsx:17 M000                     == freefallSettings.announceSpeed
+App.tsx:17 N111                     == canopySettings.announceAltitude
+App.tsx:17 O000                     == canopySettings.announceSpeed
+App.tsx:17 P001000010000100         == ascendSettings.fromAltitude
+App.tsx:17 Q300003000030000         == ascendSettings.toAltitude
+App.tsx:17 R000000000000000         == freefallSettings.fromAltitude
+App.tsx:17 S300003000030000         == freefallSettings.toAltitude
+App.tsx:17 T000000000000000         == canopySettings.fromAltitude
+App.tsx:17 U300003000030000         == canopySettings.toAltitude
+App.tsx:17 V030303                  == ascendSettings.volume
+App.tsx:17 W101010                  == freefallSettings.volume
+App.tsx:17 X030303                  == canopySettings.volume
+App.tsx:17 Y080080080               == freefallThreshold
+App.tsx:17 Z+00000+00000+00000      == altitudeOffset
+App.tsx:17 +2a01500Seatbelts
+App.tsx:17 +3a01500Seatbelts
+App.tsx:17 +4a01500Seatbelts
+App.tsx:17 +2f06000Breakoff
+App.tsx:17 +2f04500Pull altitude
+App.tsx:17 +3f05500Breakoff
+App.tsx:17 +3f04000Pull altitude
+App.tsx:17 +4f05000Breakoff
+App.tsx:17 +4f03500Pull altitude
+App.tsx:17 aCheck altitude
+App.tsx:17 aInfared
+App.tsx:17 aSilence
+App.tsx:17 aTrack-away
+App.tsx:17 aCheck altimeter
+App.tsx:17 end-settings
+App.tsx:17 -----
