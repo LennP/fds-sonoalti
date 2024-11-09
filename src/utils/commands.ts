@@ -251,7 +251,7 @@ export const COMMANDS: Commands = {
       string,
     ]) => {
       if (operation === "-") {
-        console.log("Remove operation request");
+        console.log("Ignoring remove notification message");
         return;
       }
       const presetIndex = parseInt(preset, 10) - 2;

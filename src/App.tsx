@@ -122,7 +122,6 @@ function App() {
       {/* Connect Device Dialog */}
       <ConnectDialog
         isOpen={!device && browserIsSupported}
-        // isOpen={false}
         onAfterConnect={handleConnect}
       />
 
@@ -130,7 +129,7 @@ function App() {
       <Configurator
         device={device}
         dialogOpen={!browserIsSupported || !device}
-        deblurOnConnect={false}
+        deblurOnConnect
       />
     </TooltipProvider>
   );
