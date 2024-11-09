@@ -24,7 +24,9 @@ import { FaX } from "react-icons/fa6";
 interface AdditionalNotificationsProps {
   additionalNotifications: AdditionalNotification[];
   onAddNotification: (additionalNotification: AdditionalNotification) => void;
-  onRemoveNotification: (additionalNotification: AdditionalNotification) => void;
+  onRemoveNotification: (
+    additionalNotification: AdditionalNotification,
+  ) => void;
   stageAdditionalNotifications: string[];
 }
 
@@ -34,8 +36,8 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   onRemoveNotification,
   stageAdditionalNotifications,
 }) => {
-
-  const [additionalNotificationOptions, setAdditionalNotificationOptions] = useState(stageAdditionalNotifications.sort());
+  const [additionalNotificationOptions, setAdditionalNotificationOptions] =
+    useState(stageAdditionalNotifications.sort());
 
   const [selectedNotification, setSelectedNotification] = useState("");
   const [altitude, setAltitude] = useState("");
@@ -55,14 +57,15 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
     // Subscribe to changes in extra additional notifications
     const unsubscribe = useSettingsStore.subscribe(
       (state) => {
-        return state.extraAdditionalNotifications
+        return state.extraAdditionalNotifications;
       },
-      (extraNotifications, _prev) => 
-        setAdditionalNotificationOptions([...additionalNotificationOptions, ...extraNotifications].sort())
-      ,
+      (extraNotifications, _prev) =>
+        setAdditionalNotificationOptions(
+          [...additionalNotificationOptions, ...extraNotifications].sort(),
+        ),
     );
     return () => unsubscribe();
-  }, [additionalNotificationOptions])
+  }, [additionalNotificationOptions]);
 
   return (
     <div className="mb-4">

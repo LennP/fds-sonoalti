@@ -108,15 +108,15 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         device,
       ),
     onPresetStageRemoveNotification: (
-        stageKey: StageSettingsID,
-        additionalNotification: AdditionalNotification,
-      ) =>
-        removePresetStageNotification(
-          presetIndex,
-          stageKey,
-          additionalNotification,
-          device,
-        ),
+      stageKey: StageSettingsID,
+      additionalNotification: AdditionalNotification,
+    ) =>
+      removePresetStageNotification(
+        presetIndex,
+        stageKey,
+        additionalNotification,
+        device,
+      ),
   });
 
   /**

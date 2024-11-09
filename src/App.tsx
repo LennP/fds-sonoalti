@@ -18,17 +18,19 @@ const processBuffer = (buffer: string): [string, boolean] => {
     let regex: RegExp = pattern;
 
     // Ensure the regex has the global flag 'g' to find all matches
-    if (!pattern.flags.includes('g')) {
+    if (!pattern.flags.includes("g")) {
       console.warn(
-        `Pattern for "${command_str}" does not have the global flag 'g'. Adding it automatically.`
+        `Pattern for "${command_str}" does not have the global flag 'g'. Adding it automatically.`,
       );
-      const newFlags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g';
+      const newFlags = pattern.flags.includes("g")
+        ? pattern.flags
+        : pattern.flags + "g";
       try {
         regex = new RegExp(pattern.source, newFlags);
       } catch (error) {
         console.error(
           `Failed to add 'g' flag to pattern for "${command_str}". Please check the regex syntax.`,
-          error
+          error,
         );
         continue;
       }
@@ -43,14 +45,14 @@ const processBuffer = (buffer: string): [string, boolean] => {
 
         // Extract the matched command
         const matchedCommand = match[0];
-        console.log("Matched command:", matchedCommand)
+        console.log("Matched command:", matchedCommand);
 
         // Call the handler with captured groups (excluding the full match)
         handleMessage(match.slice(1));
 
         // Remove the matched command from the buffer
         // console.log("Old buffer:", buffer);
-        buffer = buffer.replace(matchedCommand, '');
+        buffer = buffer.replace(matchedCommand, "");
         // console.log("New buffer:", buffer);
       }
     }
@@ -61,17 +63,15 @@ const processBuffer = (buffer: string): [string, boolean] => {
   if (endSettingsMatch) {
     matchedSomeCommand = true;
     endOfSettings = true;
-  
+
     // Add (Altitude) notification only if "end-settings" (firmware >= 1.1)
     const separator = endSettingsMatch[1];
-    if (separator === '-') {
-      useSettingsStore
-        .getState()
-        .addExtraAdditionalNotification("(Altitude)");
+    if (separator === "-") {
+      useSettingsStore.getState().addExtraAdditionalNotification("(Altitude)");
     }
-  
+
     // Remove the matched "end-settings" or "end settings" from the buffer
-    buffer = buffer.replace(endSettingsRegex, '');
+    buffer = buffer.replace(endSettingsRegex, "");
   }
 
   if (!matchedSomeCommand) {
@@ -81,14 +81,13 @@ const processBuffer = (buffer: string): [string, boolean] => {
   return [buffer, endOfSettings];
 };
 
-
 function App() {
   const [device, setDevice] = useState<FDSDevice | null>(null);
   const deviceRef = useRef<FDSDevice | null>(null);
 
   const [browserIsSupported, setBrowserIsSupported] = useState<boolean>(true);
 
-  const bufferRef = useRef<string>('');
+  const bufferRef = useRef<string>("");
 
   const handleConnect = (device: FDSDevice) => {
     deviceRef.current = device;
@@ -108,7 +107,9 @@ function App() {
         bufferRef.current += data;
         console.log("Updated buffer:", bufferRef.current);
 
-        const [newBuffer, endOfSettingsReceived] = processBuffer(bufferRef.current);
+        const [newBuffer, endOfSettingsReceived] = processBuffer(
+          bufferRef.current,
+        );
         bufferRef.current = newBuffer;
         // If end of settings is received, set the device
         if (endOfSettingsReceived) setDevice(device);

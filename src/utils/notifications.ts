@@ -127,7 +127,7 @@ export const CANOPY_NOTIFICATION_OPTIONS = [
 ];
 
 function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export const possibleNotificationsForRegExp = ((): string => {
@@ -137,11 +137,13 @@ export const possibleNotificationsForRegExp = ((): string => {
     ...CANOPY_NOTIFICATION_OPTIONS,
   ];
   const uniqueNotifications = Array.from(new Set(allNotifications));
-  
-  const escapedNotifications = uniqueNotifications.map(notification => escapeRegExp(notification));
-  
+
+  const escapedNotifications = uniqueNotifications.map((notification) =>
+    escapeRegExp(notification),
+  );
+
   escapedNotifications.sort((a, b) => b.length - a.length);
-  const notificationPattern = escapedNotifications.join('|');
-  
+  const notificationPattern = escapedNotifications.join("|");
+
   return notificationPattern;
 })();

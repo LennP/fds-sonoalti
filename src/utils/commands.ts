@@ -24,7 +24,7 @@ function createGeneralSettingCommand(
   settingKey: GeneralSettingsKey,
 ): Command<[string], boolean> {
   return {
-    pattern: new RegExp(`${letter}([01])`, 'g'),
+    pattern: new RegExp(`${letter}([01])`, "g"),
     handleMessage: ([value]) =>
       useSettingsStore
         .getState()
@@ -39,7 +39,7 @@ function createPresetStageBooleanCommand(
   settingKey: StageSettingsKey,
 ): Command<[string, string, string], [boolean, boolean, boolean]> {
   return {
-    pattern: new RegExp(`${letter}([01])([01])([01])`, 'g'),
+    pattern: new RegExp(`${letter}([01])([01])([01])`, "g"),
     handleMessage: (values: [string, string, string]) =>
       values.forEach((value, index) =>
         useSettingsStore
@@ -57,7 +57,8 @@ function createPresetPolarNumberCommand(
   valueLength: number,
 ): Command<[string, string, string], [number, number, number]> {
   const pattern = new RegExp(
-    `${letter}` + `([+-]?${`\\d{${valueLength}}`})`.repeat(3), 'g'
+    `${letter}` + `([+-]?${`\\d{${valueLength}}`})`.repeat(3),
+    "g",
   );
   return {
     pattern,
@@ -87,7 +88,8 @@ function createPresetStageNumberCommand(
   valueLength: number,
 ): Command<[string, string, string], [number, number, number]> {
   const pattern = new RegExp(
-    `${letter}` + `(${`\\d{${valueLength}}`})`.repeat(3), 'g'
+    `${letter}` + `(${`\\d{${valueLength}}`})`.repeat(3),
+    "g",
   );
   return {
     pattern,
@@ -241,7 +243,8 @@ export const COMMANDS: Commands = {
   /* Additional Notification */
   notification: {
     pattern: new RegExp(
-      `([+-])([2-4])([afc])(\\d{5})(${possibleNotificationsForRegExp})`, 'g'
+      `([+-])([2-4])([afc])(\\d{5})(${possibleNotificationsForRegExp})`,
+      "g",
     ),
     handleMessage: ([operation, preset, stage, altitude, notificationName]: [
       string,
@@ -280,7 +283,6 @@ export const COMMANDS: Commands = {
       } else {
         throw new Error("Invalid operation for notification: " + operation);
       }
-
     },
     generateMessage: (notificationChange: AdditionalNotificationChange) => {
       console.log("Adding: ", notificationChange);

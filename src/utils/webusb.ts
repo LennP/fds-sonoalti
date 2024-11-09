@@ -77,7 +77,10 @@ export class FDSDevice {
 
   async send(data: string): Promise<void> {
     if (this.endpointOut !== null) {
-      await this.device.transferOut(this.endpointOut, new TextEncoder().encode(data));
+      await this.device.transferOut(
+        this.endpointOut,
+        new TextEncoder().encode(data),
+      );
     } else {
       throw new Error("EndpointOut is not set.");
     }
@@ -92,7 +95,8 @@ export class FDSDevice {
             console.error("Serial data is undefined");
             continue;
           }
-          if (this.onReceive) this.onReceive(new TextDecoder().decode(result.data));
+          if (this.onReceive)
+            this.onReceive(new TextDecoder().decode(result.data));
         } else {
           throw new Error("EndpointIn is not set.");
         }
