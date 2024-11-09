@@ -243,7 +243,6 @@ export const COMMANDS: Commands = {
     pattern: new RegExp(
       `([+-])([2-4])([afc])(\\d{5})(${possibleNotificationsForRegExp})`, 'g'
     ),
-    // pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/g, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
     handleMessage: ([operation, preset, stage, altitude, notificationName]: [
       string,
       string,
