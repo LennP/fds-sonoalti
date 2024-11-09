@@ -56,19 +56,22 @@ const processBuffer = (buffer: string): [string, boolean] => {
     }
   }
 
-  // Special handling for "end-settings" command
-  const endSettingsIndex = buffer.indexOf("end-settings");
-  if (endSettingsIndex !== -1) {
+  // Special handling for "end-settings" or "end settings" command
+  const endSettingsMatch = buffer.match(/end([- ])settings/);
+  if (endSettingsMatch) {
     matchedSomeCommand = true;
     endOfSettings = true;
-
-    // Add (Altitude) notification option
-    useSettingsStore
-      .getState()
-      .addExtraAdditionalNotification("(Altitude)")
-
-    // Remove "end-settings" from the buffer
-    buffer = buffer.replace("end-settings", "");
+  
+    // Add (Altitude) notification only if "end-settings" (firmware >= 1.1)
+    const separator = endSettingsMatch[1];
+    if (separator === '-') {
+      useSettingsStore
+        .getState()
+        .addExtraAdditionalNotification("(Altitude)");
+    }
+  
+    // Remove the matched "end-settings" or "end settings" from the buffer
+    buffer = buffer.replace(endSettingsRegex, '');
   }
 
   if (!matchedSomeCommand) {
