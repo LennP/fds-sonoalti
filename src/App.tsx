@@ -48,9 +48,9 @@ const processBuffer = (buffer: string): [string, boolean] => {
         handleMessage(match.slice(1));
 
         // Remove the matched command from the buffer
-        console.log("Old buffer:", buffer);
+        // console.log("Old buffer:", buffer);
         buffer = buffer.replace(matchedCommand, '');
-        console.log("New buffer:", buffer);
+        // console.log("New buffer:", buffer);
       }
     }
   }

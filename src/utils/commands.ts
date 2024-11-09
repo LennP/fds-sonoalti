@@ -250,10 +250,6 @@ export const COMMANDS: Commands = {
       string,
       string,
     ]) => {
-      if (operation === "-") {
-        console.log("Ignoring remove notification message");
-        return;
-      }
       const presetIndex = parseInt(preset, 10) - 2;
       const stageKey =
         stage === "a"
@@ -267,12 +263,24 @@ export const COMMANDS: Commands = {
         throw new Error("Invalid stage for notification: " + stage);
       const altitudeInt = parseInt(altitude, 10);
 
-      useSettingsStore
-        .getState()
-        .addPresetStageNotification(presetIndex, stageKey, {
-          altitude: altitudeInt,
-          notification: notificationName,
-        });
+      if (operation === "+") {
+        useSettingsStore
+          .getState()
+          .addPresetStageNotification(presetIndex, stageKey, {
+            altitude: altitudeInt,
+            notification: notificationName,
+          });
+      } else if (operation === "-") {
+        useSettingsStore
+          .getState()
+          .removePresetStageNotification(presetIndex, stageKey, {
+            altitude: altitudeInt,
+            notification: notificationName,
+          });
+      } else {
+        throw new Error("Invalid operation for notification: " + operation);
+      }
+
     },
     generateMessage: (notificationChange: AdditionalNotificationChange) => {
       console.log("Adding: ", notificationChange);
@@ -294,7 +302,8 @@ export const COMMANDS: Commands = {
         .padStart(5, "0");
       const notification =
         notificationChange.additionalNotification.notification;
-      return `+${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
+      const operation = notificationChange.add ? "+" : "-";
+      return `${operation}${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
     },
   },
 };

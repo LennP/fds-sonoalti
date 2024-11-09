@@ -36,6 +36,10 @@ interface PresetProps {
     stageKey: StageSettingsID,
     additionalNotification: AdditionalNotification,
   ) => void;
+  onPresetStageRemoveNotification: (
+    stageKey: StageSettingsID,
+    additionalNotification: AdditionalNotification,
+  ) => void;
 }
 
 // Define a type for stage configuration
@@ -81,6 +85,7 @@ const Preset: React.FC<PresetProps> = ({
   onPresetChange,
   onPresetStageChange,
   onPresetStageAddNotification,
+  onPresetStageRemoveNotification,
 }) => {
   return (
     <div className="bg-white shadow-lg rounded-xl overflow-hidden">
@@ -111,6 +116,9 @@ const Preset: React.FC<PresetProps> = ({
             }
             onPresetStageAddNotification={(additionalNotification) =>
               onPresetStageAddNotification(stage.id, additionalNotification)
+            }
+            onPresetStageRemoveNotification={(additionalNotification) =>
+              onPresetStageRemoveNotification(stage.id, additionalNotification)
             }
             notificationOptions={stage.notificationOptions}
             speedLabel={stage.speedLabel}

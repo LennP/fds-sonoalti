@@ -23,7 +23,7 @@ import { FaX } from "react-icons/fa6";
 interface AdditionalNotificationsProps {
   additionalNotifications: AdditionalNotification[];
   onAddNotification: (additionalNotification: AdditionalNotification) => void;
-  onRemoveNotification: (index: number) => void;
+  onRemoveNotification: (additionalNotification: AdditionalNotification) => void;
   notificationOptions: string[];
 }
 
@@ -99,7 +99,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
           <li key={index} className="flex items-center">
             <div
               className="flex justify-center items-center mr-2 bg-red-400 text-white w-4 h-4 rounded-[6px] cursor-pointer"
-              onClick={() => onRemoveNotification(index)}
+              onClick={() => onRemoveNotification(item)}
             >
               <FaX size="0.5em" />
             </div>

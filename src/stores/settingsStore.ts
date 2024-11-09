@@ -43,14 +43,12 @@ type SettingsStore = {
     additionalNotification: AdditionalNotification,
     device?: FDSDevice | null,
   ) => void;
-  // removePresetStageNotification: (
-  //   presetIndex: number,
-  //   stageKey: StageSettingsName,
-  //   notification: Notification,
-  // ) => void;
-  // const newPresetSetting: Settings["presetSettings"][0][K] = structuredClone(
-  //   useSettingsStore.getState().settings.presetSettings[presetIndex][key],
-  // );
+  removePresetStageNotification: (
+    presetIndex: number,
+    stageKey: StageSettingsID,
+    additionalNotification: AdditionalNotification,
+    device?: FDSDevice | null,
+  ) => void;
 };
 
 export const handleStateUpdateConditionally = <T, U>(
@@ -193,6 +191,51 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     handleStateUpdateConditionally(
       "notification",
       {
+        add: true,
+        presetIndex,
+        stageKey,
+        additionalNotification,
+      },
+      device,
+    );
+  },
+
+  removePresetStageNotification: (
+    presetIndex: number,
+    stageKey: StageSettingsID,
+    additionalNotification: AdditionalNotification,
+    device?: FDSDevice | null,
+  ) => {
+    set((state) => {
+      const updatedPresetSettings = [...state.settings.presetSettings];
+      const updatedStageSettings = {
+        ...updatedPresetSettings[presetIndex][stageKey],
+      };
+      // Find the index of the first notification that matches both altitude and notification
+      const indexToRemove = updatedStageSettings.additionalNotifications.findIndex(
+        (existingNotification) =>
+          existingNotification.altitude === additionalNotification.altitude &&
+          existingNotification.notification === additionalNotification.notification,
+      );
+      // If a matching notification is found, remove it from the array
+      if (indexToRemove !== -1) {
+        updatedStageSettings.additionalNotifications.splice(indexToRemove, 1);
+      }
+      updatedPresetSettings[presetIndex] = {
+        ...updatedPresetSettings[presetIndex],
+        [stageKey]: updatedStageSettings,
+      };
+      return {
+        settings: {
+          ...state.settings,
+          presetSettings: updatedPresetSettings,
+        },
+      };
+    });
+    handleStateUpdateConditionally(
+      "notification",
+      {
+        add: false,
         presetIndex,
         stageKey,
         additionalNotification,

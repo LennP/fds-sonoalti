@@ -42,6 +42,7 @@ export interface Settings {
 }
 
 export interface AdditionalNotificationChange {
+  add: boolean;
   presetIndex: number;
   stageKey: StageSettingsID;
   additionalNotification: AdditionalNotification;
