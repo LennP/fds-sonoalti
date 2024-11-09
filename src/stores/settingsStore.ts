@@ -1,5 +1,6 @@
 // settingsStore.ts
 import {
+  AdditionalNotification,
   GeneralSettingsKey,
   GeneralSettingsValue,
   PresetSettingsKey,
@@ -36,6 +37,20 @@ type SettingsStore = {
     value: StageSettingsValue,
     device?: FDSDevice | null,
   ) => void;
+  addPresetStageNotification: (
+    presetIndex: number,
+    stageKey: StageSettingsID,
+    additionalNotification: AdditionalNotification,
+    device?: FDSDevice | null,
+  ) => void;
+  // removePresetStageNotification: (
+  //   presetIndex: number,
+  //   stageKey: StageSettingsName,
+  //   notification: Notification,
+  // ) => void;
+  // const newPresetSetting: Settings["presetSettings"][0][K] = structuredClone(
+  //   useSettingsStore.getState().settings.presetSettings[presetIndex][key],
+  // );
 };
 
 export const handleStateUpdateConditionally = <T, U>(
@@ -143,54 +158,49 @@ const useSettingsStore = create<SettingsStore>((set) => ({
       device,
     );
   },
+
+  addPresetStageNotification: (
+    presetIndex: number,
+    stageKey: StageSettingsID,
+    additionalNotification: AdditionalNotification,
+    device?: FDSDevice | null,
+  ) => {
+    set((state) => {
+      const updatedPresetSettings = [...state.settings.presetSettings];
+      const updatedStageSettings = {
+        ...updatedPresetSettings[presetIndex][stageKey],
+      };
+      // Check if notification with altitude already exists in object
+      if (
+        !updatedStageSettings.additionalNotifications.some(
+          (existingNotification) =>
+            existingNotification.altitude === notification.altitude &&
+            existingNotification.notification == notification.notification,
+        )
+      )
+        updatedStageSettings.additionalNotifications.push(notification);
+      updatedPresetSettings[presetIndex] = {
+        ...updatedPresetSettings[presetIndex],
+        [stageKey]: updatedStageSettings,
+      };
+      return {
+        settings: {
+          ...state.settings,
+          presetSettings: updatedPresetSettings,
+        },
+      };
+    });
+    handleStateUpdateConditionally(
+      'notification',
+      {
+        presetIndex,
+        stageKey,
+        additionalNotification,
+      },
+      device,
+    );
+  },
 }));
 
 export default useSettingsStore;
 
-// addPresetStageNotification: (
-//   presetIndex: number,
-//   stageKey: StageSettingsID,
-//   notification: AdditionalNotification,
-//   device?: FDSDevice | null,
-// ) => void;
-// removePresetStageNotification: (
-//   presetIndex: number,
-//   stageKey: StageSettingsName,
-//   notification: Notification,
-// ) => void;
-// const newPresetSetting: Settings["presetSettings"][0][K] = structuredClone(
-//   useSettingsStore.getState().settings.presetSettings[presetIndex][key],
-// );
-// addPresetStageNotification: (
-//   presetIndex: number,
-//   stageKey,
-//   notification: AdditionalNotification,
-//   device?: FDSDevice | null,
-// ) => {
-//   set((state) => {
-//     const updatedPresetSettings = [...state.settings.presetSettings];
-//     const updatedStageSettings = {
-//       ...updatedPresetSettings[presetIndex][stageKey],
-//     };
-//     // Check if notification with altitude already exists in object
-//     if (
-//       !updatedStageSettings.additionalNotifications.some(
-//         (existingNotification) =>
-//           existingNotification.altitude === notification.altitude &&
-//           existingNotification.notification == notification.notification,
-//       )
-//     )
-//       updatedStageSettings.additionalNotifications.push(notification);
-//     updatedPresetSettings[presetIndex] = {
-//       ...updatedPresetSettings[presetIndex],
-//       [stageKey]: updatedStageSettings,
-//     };
-//     return {
-//       settings: {
-//         ...state.settings,
-//         presetSettings: updatedPresetSettings,
-//       },
-//     };
-//   });
-//   handleStateUpdateConditionally(`${stageKey}.${key}`, device);
-// },

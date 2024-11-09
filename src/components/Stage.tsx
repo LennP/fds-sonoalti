@@ -11,7 +11,7 @@ import {
   FreefallStageSettings,
   StageName,
   StageSettings,
-  StageSettingsValue,
+  StageSettingsValue
 } from "@/types";
 import React from "react";
 
@@ -27,6 +27,9 @@ interface StageProps {
         settingKey: keyof FreefallStageSettings,
         value: StageSettingsValue,
       ) => void);
+  onPresetStageAddNotification: (
+    additionalNotification: AdditionalNotification,
+  ) => void;
   notificationOptions: string[];
   speedLabel: string;
 }
@@ -35,6 +38,7 @@ const Stage: React.FC<StageProps> = ({
   stageName,
   stageSettings,
   onPresetStageChange,
+  onPresetStageAddNotification,
   notificationOptions,
   speedLabel,
 }) => {
@@ -83,20 +87,12 @@ const Stage: React.FC<StageProps> = ({
           }}
         />
         <AdditionalNotifications
-          notifications={stageSettings.additionalNotifications}
-          onAddNotification={(notification: AdditionalNotification) => {
-            const newNotifications = [
-              ...stageSettings.additionalNotifications,
-              notification,
-            ];
-            onAdd("notifications", newNotifications);
+          additionalNotifications={stageSettings.additionalNotifications}
+          onAddNotification={(additionalNotification: AdditionalNotification) => {
+            onPresetStageAddNotification(additionalNotification);
           }}
           onRemoveNotification={(index: number) => {
-            const newNotifications =
-              stageSettings.additionalNotifications.filter(
-                (_, i) => i !== index,
-              );
-            onChange("notifications", newNotifications);
+            // onChange("notifications", newNotifications);
           }}
           notificationOptions={notificationOptions}
         />

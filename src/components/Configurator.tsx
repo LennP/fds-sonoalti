@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import useSettingsStore from "@/stores/settingsStore"; // Import the store
 import {
+  AdditionalNotification,
   FreefallStageSettings,
   GeneralSettings,
   GeneralSettingsValue,
@@ -42,6 +43,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
     updateGeneralSetting,
     updatePresetSetting,
     updatePresetStageSetting,
+    addPresetStageNotification,
   } = useSettingsStore();
 
   const [selectedPreset, setSelectedPreset] = useState<number>(0);
@@ -189,6 +191,18 @@ const Configurator: React.FC<ConfiguratorProps> = ({
               device,
             )
           }
+          onPresetStageAddNotification={(
+            stageKey: StageSettingsID,
+            additionalNotification: AdditionalNotification,
+          ) => 
+            addPresetStageNotification(
+              selectedPreset,
+              stageKey,
+              additionalNotification,
+              device,
+            )
+          }
+          
         />
       ) : (
         // Render all three presets on larger screens
@@ -212,6 +226,17 @@ const Configurator: React.FC<ConfiguratorProps> = ({
                   stageKey,
                   settingKey,
                   value,
+                  device,
+                )
+              }
+              onPresetStageAddNotification={(
+                stageKey: StageSettingsID,
+                additionalNotification: AdditionalNotification,
+              ) => 
+                addPresetStageNotification(
+                  presetIndex,
+                  stageKey,
+                  additionalNotification,
                   device,
                 )
               }

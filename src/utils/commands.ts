@@ -1,6 +1,6 @@
 // commands.ts
 import useSettingsStore from "@/stores/settingsStore";
-import { GeneralSettingsKey, PresetSettingsKey, StageSettingsID, StageSettingsKey } from "@/types";
+import { AdditionalNotificationChange, GeneralSettingsKey, PresetSettingsKey, StageSettingsID, StageSettingsKey } from "@/types";
 
 export type Command<T, U> = {
   pattern: RegExp;
@@ -240,32 +240,43 @@ export const COMMANDS: Commands = {
     "Z",
     "dropzoneOffset",
     5
-  )
+  ),
+  /* Additional Notification */
+  "notification": {
+    pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
+    handleMessage: ([operation, preset, stage, altitude, notificationName]: [string, string, string, string, string]) => {
+      console.log("Handling notificiation message:", operation, preset, stage, altitude, notificationName)
+      if (operation === "-") {
+        console.log("Remove operation request");
+        return;
+      }
+      const presetIndex = parseInt(preset, 10) - 2;
+      const stageKey =
+        stage === "a"
+          ? "ascendSettings"
+          : stage === "f"
+            ? "freefallSettings"
+            : "canopySettings";
+      const altitudeInt = parseInt(altitude, 10);
+
+      useSettingsStore.getState().addPresetStageNotification(presetIndex, stageKey, {
+        altitude: altitudeInt,
+        notification: notificationName,
+      });
+    },
+    generateMessage: (notificationChange: AdditionalNotificationChange) => {
+      console.log('Adding: ', notificationChange)
+      const presetIndexOffset = notificationChange.presetIndex + 2;
+      const stageChar =
+        notificationChange.stage === "ascendSettings"
+          ? "a"
+          : notificationChange.stage === "freefallSettings"
+            ? "f"
+            : "c";
+      const altitudeStr = notificationChange.additionalNotification.altitude.toString().padStart(5, "0");
+      const notification = notificationChange.additionalNotification.notification;
+      return `+${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
+    },
+  },
 };
 
-// /* Additional Notification */
-// notification: {
-//   pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
-//   handleMessage: ([add, preset, stage, altitude, notificationName]) => {
-//     const addPresetStageNotification =
-//       useSettingsStore.getState().addPresetStageNotification;
-//     const presetIndex = parseInt(preset, 10) - 2;
-//     const stageKey =
-//       stage === "a"
-//         ? "ascendSettings"
-//         : stage === "f"
-//           ? "freefallSettings"
-//           : "canopySettings";
-//     const altitudeInt = parseInt(altitude, 10);
-
-//     addPresetStageNotification(presetIndex, stageKey, {
-//       altitude: altitudeInt,
-//       notification: notificationName,
-//     });
-//   },
-//   generateMessage: (oldSettings: Settings) => {
-//     const addPresetStageNotification =
-//       useSettingsStore.getState().addPresetStageNotification;
-//       return "";
-//   },
-// },

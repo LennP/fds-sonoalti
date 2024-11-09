@@ -21,14 +21,14 @@ import { FaBell } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
 interface AdditionalNotificationsProps {
-  notifications: AdditionalNotification[];
-  onAddNotification: (notification: AdditionalNotification) => void;
+  additionalNotifications: AdditionalNotification[];
+  onAddNotification: (additionalNotification: AdditionalNotification) => void;
   onRemoveNotification: (index: number) => void;
   notificationOptions: string[];
 }
 
 const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
-  notifications,
+  additionalNotifications,
   onAddNotification,
   onRemoveNotification,
   notificationOptions,
@@ -36,9 +36,9 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   const [selectedNotification, setSelectedNotification] = useState("");
   const [altitude, setAltitude] = useState("");
 
-  const handleAdd = () => {
+  const handleAddNotification = () => {
     if (selectedNotification && altitude) {
-      onAddNotification({ notification: selectedNotification, altitude });
+      onAddNotification({ notification: selectedNotification, altitude: Number(altitude) });
       setSelectedNotification("");
       setAltitude("");
     }
@@ -87,12 +87,12 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
           className="w-20"
         />
         <span>ft</span>
-        <Button onClick={handleAdd} variant="default">
+        <Button onClick={handleAddNotification} variant="default">
           +
         </Button>
       </div>
       <ul className="mt-2">
-        {notifications.map((item, index) => (
+        {additionalNotifications.map((item, index) => (
           <li key={index} className="flex items-center">
             <div
               className="flex justify-center items-center mr-2 bg-red-400 text-white w-4 h-4 rounded-[6px] cursor-pointer"

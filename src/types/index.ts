@@ -41,13 +41,19 @@ export interface Settings {
   presetSettings: PresetSettings[];
 }
 
+export interface AdditionalNotificationChange {
+  presetIndex: number;
+  stage: StageSettingsID;
+  additionalNotification: AdditionalNotification;
+}
+
 export type StageSettingsID =
   | "ascendSettings"
   | "freefallSettings"
   | "canopySettings";
 
 export enum StageName {
-  ASCEND = "ascend",
-  FREEFALL = "freefall",
-  CANOPY = "canopy",
+  ASCEND = "Ascend",
+  FREEFALL = "Freefall",
+  CANOPY = "Canopy",
 }
