@@ -71,7 +71,7 @@ const processBuffer = (buffer: string): [string, boolean] => {
     }
 
     // Remove the matched "end-settings" or "end settings" from the buffer
-    buffer = buffer.replace(endSettingsRegex, "");
+    buffer = buffer.replace(endSettingsMatch[0], "");
   }
 
   if (!matchedSomeCommand) {
