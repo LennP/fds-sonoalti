@@ -8,7 +8,7 @@ import {
   Settings,
   StageSettingsID,
   StageSettingsKey,
-  StageSettingsValue
+  StageSettingsValue,
 } from "@/types";
 import { COMMANDS, Commands } from "@/utils/commands";
 import { defaultSettings } from "@/utils/defaultSettings";
@@ -191,7 +191,7 @@ const useSettingsStore = create<SettingsStore>((set) => ({
       };
     });
     handleStateUpdateConditionally(
-      'notification',
+      "notification",
       {
         presetIndex,
         stageKey,
@@ -203,4 +203,3 @@ const useSettingsStore = create<SettingsStore>((set) => ({
 }));
 
 export default useSettingsStore;
-

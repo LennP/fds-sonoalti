@@ -1,6 +1,12 @@
 // commands.ts
 import useSettingsStore from "@/stores/settingsStore";
-import { AdditionalNotificationChange, GeneralSettingsKey, PresetSettingsKey, StageSettingsID, StageSettingsKey } from "@/types";
+import {
+  AdditionalNotificationChange,
+  GeneralSettingsKey,
+  PresetSettingsKey,
+  StageSettingsID,
+  StageSettingsKey,
+} from "@/types";
 
 export type Command<T, U> = {
   pattern: RegExp;
@@ -44,7 +50,6 @@ function createPresetStageBooleanCommand(
   };
 }
 
-
 function createPresetPolarNumberCommand(
   letter: string,
   settingKey: PresetSettingsKey,
@@ -59,23 +64,18 @@ function createPresetPolarNumberCommand(
       values.forEach((value, index) =>
         useSettingsStore
           .getState()
-          .updatePresetSetting(
-            index,
-            settingKey,
-            parseInt(value, 10),
-          ),
+          .updatePresetSetting(index, settingKey, parseInt(value, 10)),
       ),
-      generateMessage: (values: [number, number, number]): string => {
-        return `${letter}${values
-          .map(
-            (value) =>
-              `${value >= 0 ? "+" : "-"}${Math.abs(value).toString().padStart(
-                valueLength,
-                "0"
-              )}`
-          )
-          .join("")}`;
-      }
+    generateMessage: (values: [number, number, number]): string => {
+      return `${letter}${values
+        .map(
+          (value) =>
+            `${value >= 0 ? "+" : "-"}${Math.abs(value)
+              .toString()
+              .padStart(valueLength, "0")}`,
+        )
+        .join("")}`;
+    },
   };
 }
 
@@ -236,16 +236,25 @@ export const COMMANDS: Commands = {
     "freefallThreshold",
     3,
   ),
-  "dropzoneOffset": createPresetPolarNumberCommand(
-    "Z",
-    "dropzoneOffset",
-    5
-  ),
+  dropzoneOffset: createPresetPolarNumberCommand("Z", "dropzoneOffset", 5),
   /* Additional Notification */
-  "notification": {
+  notification: {
     pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
-    handleMessage: ([operation, preset, stage, altitude, notificationName]: [string, string, string, string, string]) => {
-      console.log("Handling notificiation message:", operation, preset, stage, altitude, notificationName)
+    handleMessage: ([operation, preset, stage, altitude, notificationName]: [
+      string,
+      string,
+      string,
+      string,
+      string,
+    ]) => {
+      console.log(
+        "Handling notificiation message:",
+        operation,
+        preset,
+        stage,
+        altitude,
+        notificationName,
+      );
       if (operation === "-") {
         console.log("Remove operation request");
         return;
@@ -259,13 +268,15 @@ export const COMMANDS: Commands = {
             : "canopySettings";
       const altitudeInt = parseInt(altitude, 10);
 
-      useSettingsStore.getState().addPresetStageNotification(presetIndex, stageKey, {
-        altitude: altitudeInt,
-        notification: notificationName,
-      });
+      useSettingsStore
+        .getState()
+        .addPresetStageNotification(presetIndex, stageKey, {
+          altitude: altitudeInt,
+          notification: notificationName,
+        });
     },
     generateMessage: (notificationChange: AdditionalNotificationChange) => {
-      console.log('Adding: ', notificationChange)
+      console.log("Adding: ", notificationChange);
       const presetIndexOffset = notificationChange.presetIndex + 2;
       const stageChar =
         notificationChange.stage === "ascendSettings"
@@ -273,10 +284,12 @@ export const COMMANDS: Commands = {
           : notificationChange.stage === "freefallSettings"
             ? "f"
             : "c";
-      const altitudeStr = notificationChange.additionalNotification.altitude.toString().padStart(5, "0");
-      const notification = notificationChange.additionalNotification.notification;
+      const altitudeStr = notificationChange.additionalNotification.altitude
+        .toString()
+        .padStart(5, "0");
+      const notification =
+        notificationChange.additionalNotification.notification;
       return `+${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
     },
   },
 };
-

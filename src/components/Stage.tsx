@@ -11,7 +11,7 @@ import {
   FreefallStageSettings,
   StageName,
   StageSettings,
-  StageSettingsValue
+  StageSettingsValue,
 } from "@/types";
 import React from "react";
 
@@ -88,7 +88,9 @@ const Stage: React.FC<StageProps> = ({
         />
         <AdditionalNotifications
           additionalNotifications={stageSettings.additionalNotifications}
-          onAddNotification={(additionalNotification: AdditionalNotification) => {
+          onAddNotification={(
+            additionalNotification: AdditionalNotification,
+          ) => {
             onPresetStageAddNotification(additionalNotification);
           }}
           onRemoveNotification={(index: number) => {

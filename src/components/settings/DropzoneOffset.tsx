@@ -3,7 +3,11 @@
 import { Input } from "@/components/ui/input"; // Adjust the import path based on your project structure
 import { Label } from "@/components/ui/label";
 import { clamp } from "@/utils"; // Ensure you have a clamp utility or define it below
-import { Tooltip, TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip";
 import React, { useEffect, useState } from "react";
 import { FaArrowDown, FaArrowUp, FaMountain } from "react-icons/fa";
 
@@ -76,12 +80,13 @@ const DropzoneOffset: React.FC<DropzoneOffsetProps> = ({
           </TooltipTrigger>
           <TooltipContent className="bg-black text-white rounded-2xl w-64">
             <p>
-              Indicate how much higher or lower your landing area from your takeoff altitude is.
+              Indicate how much higher or lower your landing area from your
+              takeoff altitude is.
             </p>
           </TooltipContent>
         </Tooltip>
       </div>
-      
+
       <div className="flex">
         {/* Input and Unit Wrapper */}
         <div
@@ -113,7 +118,9 @@ const DropzoneOffset: React.FC<DropzoneOffsetProps> = ({
           type="button"
           onClick={setPositive}
           className={`p-2 ml-2 rounded ${
-            dropzoneOffsetIsPositive ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300"
+            dropzoneOffsetIsPositive
+              ? "bg-black text-white"
+              : "bg-gray-200 hover:bg-gray-300"
           }`}
           aria-label="Set Higher"
         >
@@ -123,7 +130,9 @@ const DropzoneOffset: React.FC<DropzoneOffsetProps> = ({
           type="button"
           onClick={setNegative}
           className={`p-2 ml-1 rounded ${
-            !dropzoneOffsetIsPositive ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300"
+            !dropzoneOffsetIsPositive
+              ? "bg-black text-white"
+              : "bg-gray-200 hover:bg-gray-300"
           }`}
           aria-label="Set Lower"
         >

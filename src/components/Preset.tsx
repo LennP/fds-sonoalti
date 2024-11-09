@@ -8,7 +8,7 @@ import {
   StageName,
   StageSettingsID,
   StageSettingsKey,
-  StageSettingsValue
+  StageSettingsValue,
 } from "@/types";
 import {
   ASCEND_NOTIFICATION_OPTIONS,
@@ -45,7 +45,7 @@ interface StageConfig {
   stageName: StageName;
   notificationOptions: any; // Adjust the type based on your notification options
   speedLabel: string;
-  settingsKey: keyof PresetSettings;
+  settingsKey: StageSettingsID;
 }
 
 const STAGES: StageConfig[] = [
@@ -107,13 +107,10 @@ const Preset: React.FC<PresetProps> = ({
             stageName={stage.stageName}
             stageSettings={presetSettings[stage.settingsKey]}
             onPresetStageChange={(key, value) =>
-              onPresetStageChange(stage.id as StageSettingsID, key, value)
+              onPresetStageChange(stage.id, key, value)
             }
             onPresetStageAddNotification={(additionalNotification) =>
-              onPresetStageAddNotification(
-                stage.id as StageSettingsID,
-                additionalNotification
-              )
+              onPresetStageAddNotification(stage.id, additionalNotification)
             }
             notificationOptions={stage.notificationOptions}
             speedLabel={stage.speedLabel}

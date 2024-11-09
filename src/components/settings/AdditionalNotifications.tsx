@@ -38,7 +38,10 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
 
   const handleAddNotification = () => {
     if (selectedNotification && altitude) {
-      onAddNotification({ notification: selectedNotification, altitude: Number(altitude) });
+      onAddNotification({
+        notification: selectedNotification,
+        altitude: Number(altitude),
+      });
       setSelectedNotification("");
       setAltitude("");
     }

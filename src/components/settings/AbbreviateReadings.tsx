@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import React from "react";
 import { MdShortText } from "react-icons/md";
@@ -29,8 +29,8 @@ const AbbreviateReadings: React.FC<AbbreviateReadingsProps> = ({
           <TooltipContent className="bg-black text-white rounded-2xl w-64">
             <p>
               When enabled, readings will be abbreviated to save time. For
-              instance, "three point five" will be said instead of
-              "thirty-five hundred".
+              instance, "three point five" will be said instead of "thirty-five
+              hundred".
             </p>
           </TooltipContent>
         </Tooltip>

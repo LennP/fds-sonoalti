@@ -4,7 +4,7 @@ import Preset from "@/components/Preset";
 import PresetTabs from "@/components/PresetTabs";
 import { Button } from "@/components/ui/button";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import useSettingsStore from "@/stores/settingsStore"; // Import the store
+import useSettingsStore from "@/stores/settingsStore";
 import {
   AdditionalNotification,
   FreefallStageSettings,
@@ -19,7 +19,7 @@ import {
 } from "@/types";
 import { downloadFile, parseYAMLFile, toYAML } from "@/utils/file";
 import { FDSDevice } from "@/utils/webusb";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { FaFileExport, FaFileImport } from "react-icons/fa";
 
 const SETTINGS_FILE_NAME: string = "config.yaml";
@@ -73,41 +73,55 @@ const Configurator: React.FC<ConfiguratorProps> = ({
   const width = useWindowWidth();
   const isMobile = width < MOBILE_BREAKPOINT;
 
-  // Handle incoming data from device
-  // useEffect(() => {
-  //   if (!device) return;
+  /**
+   * Generates the props for a Preset component based on the preset index.
+   * This helps in avoiding duplication of callback functions.
+   *
+   * @param presetIndex - The index of the preset.
+   * @returns An object containing all the necessary props for the Preset component.
+   */
+  const generatePresetProps = (presetIndex: number) => ({
+    presetNumber: presetIndex + 1,
+    presetSettings: settings.presetSettings[presetIndex],
+    onPresetChange: (
+      key: keyof PresetSettings,
+      value: PresetSettingsValue,
+    ) => updatePresetSetting(presetIndex, key, value, device),
+    onPresetStageChange: (
+      stageKey: StageSettingsID,
+      settingKey: keyof StageSettings | keyof FreefallStageSettings,
+      value: StageSettingsValue,
+    ) =>
+      updatePresetStageSetting(
+        presetIndex,
+        stageKey,
+        settingKey,
+        value,
+        device,
+      ),
+    onPresetStageAddNotification: (
+      stageKey: StageSettingsID,
+      additionalNotification: AdditionalNotification,
+    ) =>
+      addPresetStageNotification(
+        presetIndex,
+        stageKey,
+        additionalNotification,
+        device,
+      ),
+  });
 
-  //   // Register handlers
-  //   device.onReceive = (data: DataView) => {
-  //     const text: string = new TextDecoder().decode(data).trim();
-  //     console.log('Received command:', text)
-  //     let matched = false;
-  //     for (const command_str in COMMANDS) {
-  //       const match = COMMANDS[command_str].pattern.exec(text);
-  //       if (match) {
-  //         COMMANDS[command_str].handleMessage(match.slice(1));
-  //         matched = true;
-  //         // break;
-  //       }
-  //     }
-  //     if (text.includes("end-settings")) {
-  //       matched = true;
-  //       // Handle end-settings command
-  //     }
-  //     if (!matched) {
-  //       console.warn('Unknown command received:', text);
-  //     }
-  //   };
-  //   device.onReceiveError = (error) => {
-  //     console.error("Receive Error:", error);
-  //   };
-
-  //   // Cleanup handlers
-  //   return () => {
-  //     device.onReceive = () => {};
-  //     device.onReceiveError = () => {};
-  //   };
-  // }, [device]);
+  /**
+   * Determines which presets to render based on the device width.
+   * - On mobile: Renders only the selected preset.
+   * - On desktop: Renders all presets.
+   */
+  const presetsToRender = useMemo(() => {
+    if (isMobile) {
+      return [selectedPreset];
+    }
+    return settings.presetSettings.map((_, index) => index);
+  }, [isMobile, selectedPreset, settings.presetSettings]);
 
   return (
     <div
@@ -123,7 +137,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
           src="https://freefalldatasystems.com/image/original_logo_w_text_no_blur.svg"
           alt="Freefall Data Systems Logo"
         />
-        <div className="float-right">
+        <div className="flex">
           {/* Export */}
           <Button onClick={handleSettingsExport} className="mr-2">
             <FaFileExport className="mr-2" />
@@ -156,7 +170,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         }
       />
 
-      {/* Preset Tabs */}
+      {/* Preset Tabs for Mobile */}
       {isMobile && (
         <div className="flex justify-center mb-2">
           <PresetTabs
@@ -169,77 +183,15 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         </div>
       )}
 
-      {/* Presets */}
+      {/* Presets Rendering */}
       {isMobile ? (
-        <Preset
-          presetNumber={selectedPreset + 1}
-          presetSettings={settings.presetSettings[selectedPreset]}
-          onPresetChange={(
-            key: keyof PresetSettings,
-            value: PresetSettingsValue,
-          ) => updatePresetSetting(selectedPreset, key, value, device)}
-          onPresetStageChange={(
-            stageKey: StageSettingsID,
-            settingKey: keyof StageSettings | keyof FreefallStageSettings,
-            value: StageSettingsValue,
-          ) =>
-            updatePresetStageSetting(
-              selectedPreset,
-              stageKey,
-              settingKey,
-              value,
-              device,
-            )
-          }
-          onPresetStageAddNotification={(
-            stageKey: StageSettingsID,
-            additionalNotification: AdditionalNotification,
-          ) => 
-            addPresetStageNotification(
-              selectedPreset,
-              stageKey,
-              additionalNotification,
-              device,
-            )
-          }
-          
-        />
+        <Preset {...generatePresetProps(selectedPreset)} />
       ) : (
-        // Render all three presets on larger screens
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {settings.presetSettings.map((preset, presetIndex) => (
+          {presetsToRender.map((presetIndex) => (
             <Preset
               key={presetIndex}
-              presetNumber={presetIndex + 1}
-              presetSettings={preset}
-              onPresetChange={(
-                key: keyof PresetSettings,
-                value: PresetSettingsValue,
-              ) => updatePresetSetting(presetIndex, key, value, device)}
-              onPresetStageChange={(
-                stageKey: StageSettingsID,
-                settingKey: keyof StageSettings | keyof FreefallStageSettings,
-                value: StageSettingsValue,
-              ) =>
-                updatePresetStageSetting(
-                  presetIndex,
-                  stageKey,
-                  settingKey,
-                  value,
-                  device,
-                )
-              }
-              onPresetStageAddNotification={(
-                stageKey: StageSettingsID,
-                additionalNotification: AdditionalNotification,
-              ) => 
-                addPresetStageNotification(
-                  presetIndex,
-                  stageKey,
-                  additionalNotification,
-                  device,
-                )
-              }
+              {...generatePresetProps(presetIndex)}
             />
           ))}
         </div>
