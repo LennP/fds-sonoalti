@@ -28,7 +28,7 @@ function App() {
       };
       device.onReceive = (data: DataView) => {
         const text: string = new TextDecoder().decode(data).trim();
-        console.log("Received command:", text);
+        console.log("Received data from device:", text);
         let matched = false;
         for (const command_str in COMMANDS) {
           const match = COMMANDS[command_str].pattern.exec(text);
@@ -62,6 +62,7 @@ function App() {
       {/* Connect Device Dialog */}
       <ConnectDialog
         isOpen={!device && browserIsSupported}
+        // isOpen={false}
         onAfterConnect={handleConnect}
       />
 
@@ -69,7 +70,7 @@ function App() {
       <Configurator
         device={device}
         dialogOpen={!browserIsSupported || !device}
-        deblurOnConnect
+        deblurOnConnect={false}
       />
     </TooltipProvider>
   );

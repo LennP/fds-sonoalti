@@ -20,8 +20,7 @@ export type StageSettingsKey = keyof FreefallStageSettings;
 export type StageSettingsValue = FreefallStageSettings[StageSettingsKey];
 
 export interface PresetSettings {
-  lzOffset: string;
-  lzHigherOrLower: "higher" | "lower";
+  dropzoneOffset: number;
   ascendSettings: StageSettings;
   freefallSettings: FreefallStageSettings;
   canopySettings: StageSettings;

@@ -8,6 +8,7 @@ import {
   StageName,
   StageSettings,
   StageSettingsID,
+  StageSettingsKey,
   StageSettingsValue,
 } from "@/types";
 import {
@@ -18,6 +19,7 @@ import {
 import React from "react";
 import { FaParachuteBox, FaPlaneDeparture } from "react-icons/fa";
 import { GiFalling } from "react-icons/gi";
+import DropzoneOffset from "./settings/DropzoneOffset";
 
 interface PresetProps {
   presetNumber: number;
@@ -28,7 +30,7 @@ interface PresetProps {
   ) => void;
   onPresetStageChange: (
     stageKey: StageSettingsID,
-    settingKey: keyof StageSettings | keyof FreefallStageSettings,
+    key: StageSettingsKey,
     value: StageSettingsValue,
   ) => void;
 }
@@ -39,13 +41,6 @@ const Preset: React.FC<PresetProps> = ({
   onPresetChange,
   onPresetStageChange,
 }) => {
-  const handleStageChange =
-    (key: keyof PresetSettings) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const value: string = event.target.value;
-      onPresetChange(key, value);
-    };
-
   return (
     <div className="bg-white shadow-lg rounded-xl overflow-hidden">
       <div className="w-full h-16 flex flex-col justify-center items-center bg-[#252727] text-white">
@@ -55,27 +50,13 @@ const Preset: React.FC<PresetProps> = ({
       </div>
 
       {/* Preset-level settings */}
-      <div className="p-4">
-        <label>
-          LZ Offset:
-          <input
-            type="number"
-            value={presetSettings.lzOffset}
-            onChange={handleStageChange("lzOffset")}
-            className="border p-1 ml-2"
-          />
-        </label>
-        <label className="ml-4">
-          LZ Higher or Lower:
-          <select
-            value={presetSettings.lzHigherOrLower}
-            onChange={handleStageChange("lzHigherOrLower")}
-            className="border p-1 ml-2"
-          >
-            <option value="higher">Higher</option>
-            <option value="lower">Lower</option>
-          </select>
-        </label>
+      <div className="px-6 py-4">
+        <DropzoneOffset
+          dropzoneOffset={presetSettings.dropzoneOffset}
+          onChange={(offset: number) =>
+            onPresetChange("dropzoneOffset", offset)
+          }
+        />
       </div>
 
       <Section title="Ascend" icon={<FaPlaneDeparture size={24} />}>
@@ -83,10 +64,10 @@ const Preset: React.FC<PresetProps> = ({
           stageName={StageName.ASCEND}
           stageSettings={presetSettings.ascendSettings}
           onPresetStageChange={(
-            settingKey: keyof StageSettings,
+            key: keyof StageSettings,
             value: StageSettingsValue,
           ) => {
-            onPresetStageChange("ascendSettings", settingKey, value);
+            onPresetStageChange("ascendSettings", key, value);
           }}
           notificationOptions={ASCEND_NOTIFICATION_OPTIONS}
           speedLabel="Climb Rate"
@@ -98,10 +79,10 @@ const Preset: React.FC<PresetProps> = ({
           stageName={StageName.FREEFALL}
           stageSettings={presetSettings.freefallSettings}
           onPresetStageChange={(
-            settingKey: keyof FreefallStageSettings,
+            key: keyof FreefallStageSettings,
             value: StageSettingsValue,
           ) => {
-            onPresetStageChange("freefallSettings", settingKey, value);
+            onPresetStageChange("freefallSettings", key, value);
           }}
           notificationOptions={FREEFALL_NOTIFICATION_OPTIONS}
           speedLabel="Freefall Speed"
@@ -113,10 +94,10 @@ const Preset: React.FC<PresetProps> = ({
           stageName={StageName.CANOPY}
           stageSettings={presetSettings.canopySettings}
           onPresetStageChange={(
-            settingKey: keyof StageSettings,
+            key: keyof StageSettings,
             value: StageSettingsValue,
           ) => {
-            onPresetStageChange("canopySettings", settingKey, value);
+            onPresetStageChange("canopySettings", key, value);
           }}
           notificationOptions={CANOPY_NOTIFICATION_OPTIONS}
           speedLabel="Descent Rate"

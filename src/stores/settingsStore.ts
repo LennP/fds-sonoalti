@@ -5,36 +5,34 @@ import {
   PresetSettingsKey,
   PresetSettingsValue,
   Settings,
-  StageSettings,
   StageSettingsID,
   StageSettingsKey,
-  StageSettingsValue,
+  StageSettingsValue
 } from "@/types";
 import { COMMANDS, Commands } from "@/utils/commands";
 import { defaultSettings } from "@/utils/defaultSettings";
 import { FDSDevice } from "@/utils/webusb";
 import { create } from "zustand";
-import { FreefallStageSettings } from "./../types/index";
 
 type SettingsStore = {
   settings: Settings;
   // Methods to update settings
   setSettings: (newSettings: Settings) => void;
   updateGeneralSetting: (
-    key: keyof Settings["generalSettings"],
+    key: GeneralSettingsKey,
     value: GeneralSettingsValue,
     device?: FDSDevice | null,
   ) => void;
   updatePresetSetting: (
     presetIndex: number,
-    key: keyof Settings["presetSettings"][0],
+    key: PresetSettingsKey,
     value: PresetSettingsValue,
     device?: FDSDevice | null,
   ) => void;
   updatePresetStageSetting: (
     presetIndex: number,
     stageKey: StageSettingsID,
-    settingKey: keyof StageSettings | keyof FreefallStageSettings,
+    settingKey: StageSettingsValue,
     value: StageSettingsValue,
     device?: FDSDevice | null,
   ) => void;
@@ -68,7 +66,7 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     value: GeneralSettingsValue,
     device?: FDSDevice | null,
   ) => {
-    console.log("updateGeneralSetting")
+    console.log("updateGeneralSetting");
     set((state: SettingsStore) => ({
       settings: {
         ...state.settings,
@@ -87,7 +85,7 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     value: PresetSettingsValue,
     device?: FDSDevice | null,
   ) => {
-    console.log("updatePresetSetting")
+    console.log("updatePresetSetting");
     set((state: SettingsStore) => {
       const updatedPresetSettings = [...state.settings.presetSettings];
       updatedPresetSettings[presetIndex] = {
@@ -105,7 +103,7 @@ const useSettingsStore = create<SettingsStore>((set) => ({
       key,
       useSettingsStore
         .getState()
-        .settings.presetSettings.forEach((preset) => preset[key]),
+        .settings.presetSettings.map((preset) => preset[key]),
       device,
     );
   },
@@ -117,7 +115,7 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     value: StageSettingsValue,
     device?: FDSDevice | null,
   ) => {
-    console.log("updatePresetStageSetting")
+    console.log("updatePresetStageSetting");
     set((state) => {
       const updatedPresetSettings = [...state.settings.presetSettings];
       const updatedStageSettings = {

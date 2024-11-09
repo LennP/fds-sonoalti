@@ -28,8 +28,7 @@ export function defaultGeneralSettings(): GeneralSettings {
 
 export function defaultPresetSettings(): PresetSettings {
   return {
-    lzOffset: "",
-    lzHigherOrLower: "higher",
+    dropzoneOffset: 0,
     ascendSettings: defaultStageSettings(),
     freefallSettings: defaultFreefallSettings(),
     canopySettings: defaultStageSettings(),

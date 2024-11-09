@@ -1,12 +1,6 @@
 // commands.ts
 import useSettingsStore from "@/stores/settingsStore";
-import {
-  FreefallStageSettings,
-  GeneralSettingsKey,
-  StageSettings,
-  StageSettingsID,
-  StageSettingsKey,
-} from "@/types";
+import { GeneralSettingsKey, PresetSettingsKey, StageSettingsID, StageSettingsKey } from "@/types";
 
 export type Command<T, U> = {
   pattern: RegExp;
@@ -32,7 +26,7 @@ function createGeneralSettingCommand(
   };
 }
 
-function createPresetBooleanCommand(
+function createPresetStageBooleanCommand(
   letter: string,
   stage: StageSettingsID,
   settingKey: StageSettingsKey,
@@ -50,13 +44,50 @@ function createPresetBooleanCommand(
   };
 }
 
-function createPresetNumberCommand(
+
+function createPresetPolarNumberCommand(
   letter: string,
-  stage: StageSettingsID,
-  settingKey: keyof StageSettings | keyof FreefallStageSettings,
+  settingKey: PresetSettingsKey,
   valueLength: number,
 ): Command<[string, string, string], [number, number, number]> {
-  const pattern = new RegExp(`${letter}` + `(${`\\d{${valueLength}}`})`.repeat(3));
+  const pattern = new RegExp(
+    `${letter}` + `([+-]?${`\\d{${valueLength}}`})`.repeat(3),
+  );
+  return {
+    pattern,
+    handleMessage: (values) =>
+      values.forEach((value, index) =>
+        useSettingsStore
+          .getState()
+          .updatePresetSetting(
+            index,
+            settingKey,
+            parseInt(value, 10),
+          ),
+      ),
+      generateMessage: (values: [number, number, number]): string => {
+        return `${letter}${values
+          .map(
+            (value) =>
+              `${value >= 0 ? "+" : "-"}${Math.abs(value).toString().padStart(
+                valueLength,
+                "0"
+              )}`
+          )
+          .join("")}`;
+      }
+  };
+}
+
+function createPresetStageNumberCommand(
+  letter: string,
+  stage: StageSettingsID,
+  settingKey: StageSettingsKey,
+  valueLength: number,
+): Command<[string, string, string], [number, number, number]> {
+  const pattern = new RegExp(
+    `${letter}` + `(${`\\d{${valueLength}}`})`.repeat(3),
+  );
   return {
     pattern,
     handleMessage: (values) =>
@@ -82,129 +113,134 @@ export const COMMANDS: Commands = {
   includePreJumpInfo: createGeneralSettingCommand("A", "includePreJumpInfo"),
   includePostJumpInfo: createGeneralSettingCommand("B", "includePostJumpInfo"),
   useMetric: createGeneralSettingCommand("C", "useMetric"),
-  "ascendSettings.abbreviateReadings": createPresetBooleanCommand(
+  "ascendSettings.abbreviateReadings": createPresetStageBooleanCommand(
     "D",
     "ascendSettings",
     "abbreviateReadings",
   ),
-  "freefallSettings.abbreviateReadings": createPresetBooleanCommand(
+  "freefallSettings.abbreviateReadings": createPresetStageBooleanCommand(
     "E",
     "freefallSettings",
     "abbreviateReadings",
   ),
-  "canopySettings.abbreviateReadings": createPresetBooleanCommand(
+  "canopySettings.abbreviateReadings": createPresetStageBooleanCommand(
     "F",
     "canopySettings",
     "abbreviateReadings",
   ),
-  "ascendSettings.announcementFrequency": createPresetNumberCommand(
+  "ascendSettings.announcementFrequency": createPresetStageNumberCommand(
     "G",
     "ascendSettings",
     "announcementFrequency",
     4,
   ),
-  "freefallSettings.announcementFrequency": createPresetNumberCommand(
+  "freefallSettings.announcementFrequency": createPresetStageNumberCommand(
     "H",
     "freefallSettings",
     "announcementFrequency",
     4,
   ),
-  "canopySettings.announcementFrequency": createPresetNumberCommand(
+  "canopySettings.announcementFrequency": createPresetStageNumberCommand(
     "I",
     "canopySettings",
     "announcementFrequency",
     4,
   ),
-  "ascendSettings.announceAltitude": createPresetBooleanCommand(
+  "ascendSettings.announceAltitude": createPresetStageBooleanCommand(
     "J",
     "ascendSettings",
     "announceAltitude",
   ),
-  "ascendSettings.announceSpeed": createPresetBooleanCommand(
+  "ascendSettings.announceSpeed": createPresetStageBooleanCommand(
     "K",
     "ascendSettings",
     "announceSpeed",
   ),
-  "freefallSettings.announceAltitude": createPresetBooleanCommand(
+  "freefallSettings.announceAltitude": createPresetStageBooleanCommand(
     "L",
     "freefallSettings",
     "announceAltitude",
   ),
-  "freefallSettings.announceSpeed": createPresetBooleanCommand(
+  "freefallSettings.announceSpeed": createPresetStageBooleanCommand(
     "M",
     "freefallSettings",
     "announceSpeed",
   ),
-  "canopySettings.announceAltitude": createPresetBooleanCommand(
+  "canopySettings.announceAltitude": createPresetStageBooleanCommand(
     "N",
     "canopySettings",
     "announceAltitude",
   ),
-  "canopySettings.announceSpeed": createPresetBooleanCommand(
+  "canopySettings.announceSpeed": createPresetStageBooleanCommand(
     "O",
     "canopySettings",
     "announceSpeed",
   ),
-  "ascendSettings.fromAltitude": createPresetNumberCommand(
+  "ascendSettings.fromAltitude": createPresetStageNumberCommand(
     "P",
     "ascendSettings",
     "fromAltitude",
     5,
   ),
-  "ascendSettings.toAltitude": createPresetNumberCommand(
+  "ascendSettings.toAltitude": createPresetStageNumberCommand(
     "Q",
     "ascendSettings",
     "toAltitude",
     5,
   ),
-  "freefallSettings.fromAltitude": createPresetNumberCommand(
+  "freefallSettings.fromAltitude": createPresetStageNumberCommand(
     "R",
     "freefallSettings",
     "fromAltitude",
     5,
   ),
-  "freefallSettings.toAltitude": createPresetNumberCommand(
+  "freefallSettings.toAltitude": createPresetStageNumberCommand(
     "S",
     "freefallSettings",
     "toAltitude",
     5,
   ),
-  "canopySettings.fromAltitude": createPresetNumberCommand(
+  "canopySettings.fromAltitude": createPresetStageNumberCommand(
     "T",
     "canopySettings",
     "fromAltitude",
     5,
   ),
-  "canopySettings.toAltitude": createPresetNumberCommand(
+  "canopySettings.toAltitude": createPresetStageNumberCommand(
     "U",
     "canopySettings",
     "toAltitude",
     5,
   ),
-  "ascendSettings.volume": createPresetNumberCommand(
+  "ascendSettings.volume": createPresetStageNumberCommand(
     "V",
     "ascendSettings",
     "volume",
     2,
   ),
-  "freefallSettings.volume": createPresetNumberCommand(
+  "freefallSettings.volume": createPresetStageNumberCommand(
     "W",
     "freefallSettings",
     "volume",
     2,
   ),
-  "canopySettings.volume": createPresetNumberCommand(
+  "canopySettings.volume": createPresetStageNumberCommand(
     "X",
     "canopySettings",
     "volume",
     2,
   ),
-  "freefallSettings.freefallThreshold": createPresetNumberCommand(
+  "freefallSettings.freefallThreshold": createPresetStageNumberCommand(
     "Y",
     "freefallSettings",
     "freefallThreshold",
     3,
   ),
+  "dropzoneOffset": createPresetPolarNumberCommand(
+    "Z",
+    "dropzoneOffset",
+    5
+  )
 };
 
 // /* Additional Notification */
