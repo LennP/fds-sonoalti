@@ -68,7 +68,7 @@ export const handleStateUpdateConditionally = <T, U>(
   }
   const message = command.generateMessage(data);
   console.log("Sending", message);
-  device.send(new TextEncoder().encode(message));
+  device.send(message);
 };
 
 const useSettingsStore = create<SettingsStore>((set) => ({

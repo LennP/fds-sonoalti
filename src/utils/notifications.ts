@@ -125,3 +125,23 @@ export const CANOPY_NOTIFICATION_OPTIONS = [
   "Track-away",
   "Check altimeter",
 ];
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export const possibleNotificationsForRegExp = ((): string => {
+  const allNotifications = [
+    ...ASCEND_NOTIFICATION_OPTIONS,
+    ...FREEFALL_NOTIFICATION_OPTIONS,
+    ...CANOPY_NOTIFICATION_OPTIONS,
+  ];
+  const uniqueNotifications = Array.from(new Set(allNotifications));
+  
+  const escapedNotifications = uniqueNotifications.map(notification => escapeRegExp(notification));
+  
+  escapedNotifications.sort((a, b) => b.length - a.length);
+  const notificationPattern = escapedNotifications.join('|');
+  
+  return notificationPattern;
+})();

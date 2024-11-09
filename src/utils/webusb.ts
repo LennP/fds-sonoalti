@@ -3,7 +3,7 @@ export class FDSDevice {
   private interfaceNumber: number | null;
   private endpointIn: number | null;
   private endpointOut: number | null;
-  public onReceive: ((data: DataView) => void) | null;
+  public onReceive: ((data: string) => void) | null;
   public onReceiveError: ((error: any) => void) | null;
 
   constructor(device: USBDevice) {
@@ -59,7 +59,7 @@ export class FDSDevice {
 
     this.readLoop();
     console.log("Sending -");
-    this.send(new TextEncoder().encode("-"));
+    this.send("-");
   }
 
   async disconnect(): Promise<void> {
@@ -75,9 +75,9 @@ export class FDSDevice {
     await this.device.close();
   }
 
-  async send(data: BufferSource): Promise<void> {
+  async send(data: string): Promise<void> {
     if (this.endpointOut !== null) {
-      await this.device.transferOut(this.endpointOut, data);
+      await this.device.transferOut(this.endpointOut, new TextEncoder().encode(data));
     } else {
       throw new Error("EndpointOut is not set.");
     }
@@ -92,7 +92,7 @@ export class FDSDevice {
             console.error("Serial data is undefined");
             continue;
           }
-          if (this.onReceive) this.onReceive(result.data);
+          if (this.onReceive) this.onReceive(new TextDecoder().decode(result.data));
         } else {
           throw new Error("EndpointIn is not set.");
         }

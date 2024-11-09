@@ -7,6 +7,7 @@ import {
   StageSettingsID,
   StageSettingsKey,
 } from "@/types";
+import { possibleNotificationsForRegExp } from "./notifications";
 
 export type Command<T, U> = {
   pattern: RegExp;
@@ -239,7 +240,10 @@ export const COMMANDS: Commands = {
   dropzoneOffset: createPresetPolarNumberCommand("Z", "dropzoneOffset", 5),
   /* Additional Notification */
   notification: {
-    pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/g, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
+    pattern: new RegExp(
+      `([+-])([2-4])([afc])(\\d{5})(${possibleNotificationsForRegExp})`, 'g'
+    ),
+    // pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/g, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
     handleMessage: ([operation, preset, stage, altitude, notificationName]: [
       string,
       string,

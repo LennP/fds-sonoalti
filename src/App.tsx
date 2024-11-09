@@ -7,11 +7,85 @@ import { browserSupportsWebUSB, FDSDevice } from "@/utils/webusb";
 import { useEffect, useRef, useState } from "react";
 import { COMMANDS } from "./utils/commands";
 
+
+/**
+ * Processes the buffer to extract and handle complete commands.
+ *
+ * @param buffer - The current buffer string containing accumulated data.
+ * @returns The updated buffer after processing complete commands.
+ */
+const processBuffer = (buffer: string): [string, boolean] => {
+  let matchedSomeCommand = false;
+  let endOfSettings = false;
+
+  // Iterate over each command pattern defined in COMMANDS
+  for (const command_str in COMMANDS) {
+    const { pattern, handleMessage } = COMMANDS[command_str];
+    let regex: RegExp = pattern;
+
+    // Ensure the regex has the global flag 'g' to find all matches
+    if (!pattern.flags.includes('g')) {
+      console.warn(
+        `Pattern for "${command_str}" does not have the global flag 'g'. Adding it automatically.`
+      );
+      const newFlags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g';
+      try {
+        regex = new RegExp(pattern.source, newFlags);
+      } catch (error) {
+        console.error(
+          `Failed to add 'g' flag to pattern for "${command_str}". Please check the regex syntax.`,
+          error
+        );
+        continue;
+      }
+    }
+
+    // Use matchAll to retrieve all matches for the current pattern
+    const matches = buffer.matchAll(regex);
+
+    for (const match of matches) {
+      if (match.index !== undefined) {
+        // Extract the matched command
+        const matchedCommand = match[0];
+        console.log("Matched command:", matchedCommand)
+        // Call the handler with captured groups (excluding the full match)
+        handleMessage(match.slice(1));
+        matchedSomeCommand = true;
+
+        // Remove the matched command from the buffer using match.index and matchedCommand.length
+        // This ensures that only the processed part is removed
+        console.log("Old buffer:", buffer)
+        buffer = buffer.slice(0, match.index) + buffer.slice(match.index + matchedCommand.length);
+        console.log("New buffer:", buffer)
+      }
+    }
+  }
+
+  // Special handling for "end-settings" command
+  const endSettingsIndex = buffer.indexOf("end-settings");
+  if (endSettingsIndex !== -1) {
+    matchedSomeCommand = true;
+    endOfSettings = true;
+
+    // Remove "end-settings" from the buffer
+    buffer = buffer.slice(0, endSettingsIndex) + buffer.slice(endSettingsIndex + "end-settings".length);
+  }
+
+  if (!matchedSomeCommand) {
+    console.warn("No complete command matched in the buffer:", buffer);
+  }
+
+  return [buffer, endOfSettings];
+};
+
+
 function App() {
   const [device, setDevice] = useState<FDSDevice | null>(null);
   const deviceRef = useRef<FDSDevice | null>(null);
 
   const [browserIsSupported, setBrowserIsSupported] = useState<boolean>(true);
+
+  const bufferRef = useRef<string>('');
 
   const handleConnect = (device: FDSDevice) => {
     deviceRef.current = device;
@@ -26,47 +100,17 @@ function App() {
         setDevice(null);
         deviceRef.current = null;
       };
-      device.onReceive = (data: DataView) => {
-        const text: string = new TextDecoder().decode(data).trim();
-        console.log("Received data from device:", text);
-        let matched = false;
-        for (const command_str in COMMANDS) {
-            const { pattern, handleMessage }: {pattern: RegExp, handleMessage: (groups: string[]) => void} = COMMANDS[command_str];
-            let regex: RegExp = pattern;
-      
-            // Check if the pattern has the 'g' flag
-            if (!pattern.flags.includes('g')) {
-              console.warn(
-                `Pattern for "${command_str}" does not have the global flag 'g'. Adding it automatically.`
-              );
-              const newFlags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g';
-              try {
-                regex = new RegExp(pattern.source, newFlags);
-              } catch (error) {
-                console.error(
-                  `Failed to add 'g' flag to pattern for "${command_str}". Please check the regex syntax.`,
-                  error
-                );
-                continue;
-              }
-            }
-      
-            // Use matchAll to retrieve all matches for the current pattern
-            const matches = text.matchAll(regex);
-      
-            for (const match of matches) {
-              // Call handleMessage with captured groups (excluding the full match)
-              handleMessage(match.slice(1));
-              matched = true;
-            }
-        }
-        if (text.includes("end-settings")) {
-          matched = true;
-          // Only set the device after info has been received
-          setDevice(device);
-        }
-        if (!matched) console.warn("Unknown command received:", text);
+      device.onReceive = (data: string) => {
+        console.log("Received data chunk from device:", data);
+        bufferRef.current += data;
+        console.log("Updated buffer:", bufferRef.current);
+
+        const [newBuffer, endOfSettingsReceived] = processBuffer(bufferRef.current);
+        bufferRef.current = newBuffer;
+        // If end of settings is received, set the device
+        if (endOfSettingsReceived) setDevice(device);
       };
+
       device.onReceiveError = (error) => console.error("Receive Error:", error);
     }
   };
