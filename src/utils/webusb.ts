@@ -3,7 +3,7 @@ export class FDSDevice {
   private interfaceNumber: number | null;
   private endpointIn: number | null;
   private endpointOut: number | null;
-  public onReceive: ((data: string) => void) | null;
+  public onReceive: ((data: DataView) => void) | null;
   public onReceiveError: ((error: any) => void) | null;
 
   constructor(device: USBDevice) {
@@ -86,6 +86,15 @@ export class FDSDevice {
     }
   }
 
+  // private async readLoop() {
+  //   this.device.transferIn(this.endpointIn, 64).then(result => {
+  //     this.onReceive(result.data);
+  //     this.readLoop();
+  //   }, error => {
+  //     this.onReceiveError(error);
+  //   });
+  // }
+
   private async readLoop(): Promise<void> {
     try {
       while (true) {
@@ -96,7 +105,7 @@ export class FDSDevice {
             continue;
           }
           if (this.onReceive)
-            this.onReceive(new TextDecoder().decode(result.data));
+            this.onReceive(result.data);
         } else {
           throw new Error("EndpointIn is not set.");
         }

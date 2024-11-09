@@ -102,7 +102,8 @@ function App() {
         setDevice(null);
         deviceRef.current = null;
       };
-      device.onReceive = (data: string) => {
+      device.onReceive = (dataView: DataView) => {
+        const data = new TextDecoder().decode(dataView);
         console.log("Received data chunk from device:", data);
         bufferRef.current += data;
         console.log("Updated buffer:", bufferRef.current);
