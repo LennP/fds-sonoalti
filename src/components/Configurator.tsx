@@ -24,7 +24,7 @@ import { FaFileExport, FaFileImport } from "react-icons/fa";
 
 const SETTINGS_FILE_NAME: string = "config.yaml";
 const PRESET_TAB_NAMES: string[] = ["Preset 1", "Preset 2", "Preset 3"];
-const MOBILE_BREAKPOINT: number = 768; // Define your breakpoint (e.g., 768px for mobile)
+const MOBILE_BREAKPOINT: number = 768; // Mobile breakpoint, e.g. 768px
 
 interface ConfiguratorProps {
   device: FDSDevice | null;
@@ -83,10 +83,8 @@ const Configurator: React.FC<ConfiguratorProps> = ({
   const generatePresetProps = (presetIndex: number) => ({
     presetNumber: presetIndex + 1,
     presetSettings: settings.presetSettings[presetIndex],
-    onPresetChange: (
-      key: keyof PresetSettings,
-      value: PresetSettingsValue,
-    ) => updatePresetSetting(presetIndex, key, value, device),
+    onPresetChange: (key: keyof PresetSettings, value: PresetSettingsValue) =>
+      updatePresetSetting(presetIndex, key, value, device),
     onPresetStageChange: (
       stageKey: StageSettingsID,
       settingKey: keyof StageSettings | keyof FreefallStageSettings,
@@ -189,10 +187,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {presetsToRender.map((presetIndex) => (
-            <Preset
-              key={presetIndex}
-              {...generatePresetProps(presetIndex)}
-            />
+            <Preset key={presetIndex} {...generatePresetProps(presetIndex)} />
           ))}
         </div>
       )}
