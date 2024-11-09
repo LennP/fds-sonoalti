@@ -7,13 +7,6 @@ import { browserSupportsWebUSB, FDSDevice } from "@/utils/webusb";
 import { useEffect, useRef, useState } from "react";
 import { COMMANDS } from "./utils/commands";
 
-
-/**
- * Processes the buffer to extract and handle complete commands.
- *
- * @param buffer - The current buffer string containing accumulated data.
- * @returns The updated buffer after processing complete commands.
- */
 const processBuffer = (buffer: string): [string, boolean] => {
   let matchedSomeCommand = false;
   let endOfSettings = false;
@@ -45,18 +38,19 @@ const processBuffer = (buffer: string): [string, boolean] => {
 
     for (const match of matches) {
       if (match.index !== undefined) {
+        matchedSomeCommand = true;
+
         // Extract the matched command
         const matchedCommand = match[0];
         console.log("Matched command:", matchedCommand)
+
         // Call the handler with captured groups (excluding the full match)
         handleMessage(match.slice(1));
-        matchedSomeCommand = true;
 
-        // Remove the matched command from the buffer using match.index and matchedCommand.length
-        // This ensures that only the processed part is removed
-        console.log("Old buffer:", buffer)
-        buffer = buffer.slice(0, match.index) + buffer.slice(match.index + matchedCommand.length);
-        console.log("New buffer:", buffer)
+        // Remove the matched command from the buffer
+        console.log("Old buffer:", buffer);
+        buffer = buffer.replace(matchedCommand, '');
+        console.log("New buffer:", buffer);
       }
     }
   }

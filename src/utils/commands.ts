@@ -250,14 +250,6 @@ export const COMMANDS: Commands = {
       string,
       string,
     ]) => {
-      console.log(
-        "Handling notification message:",
-        operation,
-        preset,
-        stage,
-        altitude,
-        notificationName,
-      );
       if (operation === "-") {
         console.log("Remove operation request");
         return;
