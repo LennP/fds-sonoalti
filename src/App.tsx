@@ -31,12 +31,34 @@ function App() {
         console.log("Received data from device:", text);
         let matched = false;
         for (const command_str in COMMANDS) {
-          const match = COMMANDS[command_str].pattern.exec(text);
-          if (match) {
-            COMMANDS[command_str].handleMessage(match.slice(1));
-            matched = true;
-            // break;
-          }
+            const { pattern, handleMessage }: {pattern: RegExp, handleMessage: (groups: string[]) => void} = COMMANDS[command_str];
+            let regex: RegExp = pattern;
+      
+            // Check if the pattern has the 'g' flag
+            if (!pattern.flags.includes('g')) {
+              console.warn(
+                `Pattern for "${command_str}" does not have the global flag 'g'. Adding it automatically.`
+              );
+              const newFlags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g';
+              try {
+                regex = new RegExp(pattern.source, newFlags);
+              } catch (error) {
+                console.error(
+                  `Failed to add 'g' flag to pattern for "${command_str}". Please check the regex syntax.`,
+                  error
+                );
+                continue;
+              }
+            }
+      
+            // Use matchAll to retrieve all matches for the current pattern
+            const matches = text.matchAll(regex);
+      
+            for (const match of matches) {
+              // Call handleMessage with captured groups (excluding the full match)
+              handleMessage(match.slice(1));
+              matched = true;
+            }
         }
         if (text.includes("end-settings")) {
           matched = true;

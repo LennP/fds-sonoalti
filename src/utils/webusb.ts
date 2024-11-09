@@ -58,8 +58,8 @@ export class FDSDevice {
     });
 
     this.readLoop();
-    console.log("Sending -----");
-    this.send(new TextEncoder().encode("-----"));
+    console.log("Sending -");
+    this.send(new TextEncoder().encode("-"));
   }
 
   async disconnect(): Promise<void> {

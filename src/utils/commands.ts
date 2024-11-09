@@ -23,7 +23,7 @@ function createGeneralSettingCommand(
   settingKey: GeneralSettingsKey,
 ): Command<[string], boolean> {
   return {
-    pattern: new RegExp(`${letter}([01])`),
+    pattern: new RegExp(`${letter}([01])`, 'g'),
     handleMessage: ([value]) =>
       useSettingsStore
         .getState()
@@ -38,7 +38,7 @@ function createPresetStageBooleanCommand(
   settingKey: StageSettingsKey,
 ): Command<[string, string, string], [boolean, boolean, boolean]> {
   return {
-    pattern: new RegExp(`${letter}([01])([01])([01])`),
+    pattern: new RegExp(`${letter}([01])([01])([01])`, 'g'),
     handleMessage: (values: [string, string, string]) =>
       values.forEach((value, index) =>
         useSettingsStore
@@ -56,7 +56,7 @@ function createPresetPolarNumberCommand(
   valueLength: number,
 ): Command<[string, string, string], [number, number, number]> {
   const pattern = new RegExp(
-    `${letter}` + `([+-]?${`\\d{${valueLength}}`})`.repeat(3),
+    `${letter}` + `([+-]?${`\\d{${valueLength}}`})`.repeat(3), 'g'
   );
   return {
     pattern,
@@ -86,7 +86,7 @@ function createPresetStageNumberCommand(
   valueLength: number,
 ): Command<[string, string, string], [number, number, number]> {
   const pattern = new RegExp(
-    `${letter}` + `(${`\\d{${valueLength}}`})`.repeat(3),
+    `${letter}` + `(${`\\d{${valueLength}}`})`.repeat(3), 'g'
   );
   return {
     pattern,
@@ -239,7 +239,7 @@ export const COMMANDS: Commands = {
   dropzoneOffset: createPresetPolarNumberCommand("Z", "dropzoneOffset", 5),
   /* Additional Notification */
   notification: {
-    pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
+    pattern: /([+-])([2-4])([afc])(\d{5})([\w ]+)/g, //  /([+-])([2-4])([afc])(\d{5})([\w ]+)/
     handleMessage: ([operation, preset, stage, altitude, notificationName]: [
       string,
       string,
@@ -248,7 +248,7 @@ export const COMMANDS: Commands = {
       string,
     ]) => {
       console.log(
-        "Handling notificiation message:",
+        "Handling notification message:",
         operation,
         preset,
         stage,

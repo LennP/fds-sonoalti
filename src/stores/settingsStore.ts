@@ -81,7 +81,6 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     value: GeneralSettingsValue,
     device?: FDSDevice | null,
   ) => {
-    console.log("updateGeneralSetting");
     set((state: SettingsStore) => ({
       settings: {
         ...state.settings,
@@ -100,7 +99,6 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     value: PresetSettingsValue,
     device?: FDSDevice | null,
   ) => {
-    console.log("updatePresetSetting");
     set((state: SettingsStore) => {
       const updatedPresetSettings = [...state.settings.presetSettings];
       updatedPresetSettings[presetIndex] = {
@@ -130,7 +128,6 @@ const useSettingsStore = create<SettingsStore>((set) => ({
     value: StageSettingsValue,
     device?: FDSDevice | null,
   ) => {
-    console.log("updatePresetStageSetting");
     set((state) => {
       const updatedPresetSettings = [...state.settings.presetSettings];
       const updatedStageSettings = {
