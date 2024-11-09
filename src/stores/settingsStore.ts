@@ -174,11 +174,11 @@ const useSettingsStore = create<SettingsStore>((set) => ({
       if (
         !updatedStageSettings.additionalNotifications.some(
           (existingNotification) =>
-            existingNotification.altitude === notification.altitude &&
-            existingNotification.notification == notification.notification,
+            existingNotification.altitude === additionalNotification.altitude &&
+            existingNotification.notification == additionalNotification.notification,
         )
       )
-        updatedStageSettings.additionalNotifications.push(notification);
+        updatedStageSettings.additionalNotifications.push(additionalNotification);
       updatedPresetSettings[presetIndex] = {
         ...updatedPresetSettings[presetIndex],
         [stageKey]: updatedStageSettings,
