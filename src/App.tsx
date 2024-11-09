@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import UnsupportedBrowserDialog from "@/components/UnsupportedBrowserDialog";
 import { browserSupportsWebUSB, FDSDevice } from "@/utils/webusb";
 import { useEffect, useRef, useState } from "react";
+import useSettingsStore from "./stores/settingsStore";
 import { COMMANDS } from "./utils/commands";
 
 const processBuffer = (buffer: string): [string, boolean] => {
@@ -61,8 +62,13 @@ const processBuffer = (buffer: string): [string, boolean] => {
     matchedSomeCommand = true;
     endOfSettings = true;
 
+    // Add (Altitude) notification option
+    useSettingsStore
+      .getState()
+      .addExtraAdditionalNotification("(Altitude)")
+
     // Remove "end-settings" from the buffer
-    buffer = buffer.slice(0, endSettingsIndex) + buffer.slice(endSettingsIndex + "end-settings".length);
+    buffer = buffer.replace("end-settings", "");
   }
 
   if (!matchedSomeCommand) {

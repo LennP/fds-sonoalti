@@ -47,7 +47,7 @@ interface StageConfig {
   id: StageSettingsID;
   icon: React.ReactElement;
   stageName: StageName;
-  notificationOptions: any; // Adjust the type based on your notification options
+  stageAdditionalNotifications: any; // Adjust the type based on your notification options
   speedLabel: string;
   settingsKey: StageSettingsID;
 }
@@ -57,7 +57,7 @@ const STAGES: StageConfig[] = [
     id: "ascendSettings",
     icon: <FaPlaneDeparture size={24} />,
     stageName: StageName.ASCEND,
-    notificationOptions: ASCEND_NOTIFICATION_OPTIONS,
+    stageAdditionalNotifications: ASCEND_NOTIFICATION_OPTIONS,
     speedLabel: "Climb Rate",
     settingsKey: "ascendSettings",
   },
@@ -65,7 +65,7 @@ const STAGES: StageConfig[] = [
     id: "freefallSettings",
     icon: <GiFalling size={24} />,
     stageName: StageName.FREEFALL,
-    notificationOptions: FREEFALL_NOTIFICATION_OPTIONS,
+    stageAdditionalNotifications: FREEFALL_NOTIFICATION_OPTIONS,
     speedLabel: "Freefall Speed",
     settingsKey: "freefallSettings",
   },
@@ -73,7 +73,7 @@ const STAGES: StageConfig[] = [
     id: "canopySettings",
     icon: <FaParachuteBox size={24} />,
     stageName: StageName.CANOPY,
-    notificationOptions: CANOPY_NOTIFICATION_OPTIONS,
+    stageAdditionalNotifications: CANOPY_NOTIFICATION_OPTIONS,
     speedLabel: "Descent Rate",
     settingsKey: "canopySettings",
   },
@@ -120,7 +120,7 @@ const Preset: React.FC<PresetProps> = ({
             onPresetStageRemoveNotification={(additionalNotification) =>
               onPresetStageRemoveNotification(stage.id, additionalNotification)
             }
-            notificationOptions={stage.notificationOptions}
+            stageAdditionalNotifications={stage.stageAdditionalNotifications}
             speedLabel={stage.speedLabel}
           />
         </Section>

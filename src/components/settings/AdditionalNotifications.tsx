@@ -15,8 +15,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import useSettingsStore from "@/stores/settingsStore";
 import { AdditionalNotification } from "@/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
@@ -24,15 +25,18 @@ interface AdditionalNotificationsProps {
   additionalNotifications: AdditionalNotification[];
   onAddNotification: (additionalNotification: AdditionalNotification) => void;
   onRemoveNotification: (additionalNotification: AdditionalNotification) => void;
-  notificationOptions: string[];
+  stageAdditionalNotifications: string[];
 }
 
 const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   additionalNotifications,
   onAddNotification,
   onRemoveNotification,
-  notificationOptions,
+  stageAdditionalNotifications,
 }) => {
+
+  const [additionalNotificationOptions, setAdditionalNotificationOptions] = useState(stageAdditionalNotifications.sort());
+
   const [selectedNotification, setSelectedNotification] = useState("");
   const [altitude, setAltitude] = useState("");
 
@@ -46,6 +50,19 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
       setAltitude("");
     }
   };
+
+  useEffect(() => {
+    // Subscribe to changes in extra additional notifications
+    const unsubscribe = useSettingsStore.subscribe(
+      (state) => {
+        return state.extraAdditionalNotifications
+      },
+      (extraNotifications, _prev) => 
+        setAdditionalNotificationOptions([...additionalNotificationOptions, ...extraNotifications].sort())
+      ,
+    );
+    return () => unsubscribe();
+  }, [additionalNotificationOptions])
 
   return (
     <div className="mb-4">
@@ -75,7 +92,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
             <SelectValue placeholder="Select notification" />
           </SelectTrigger>
           <SelectContent className="bg-white">
-            {notificationOptions.map((option) => (
+            {additionalNotificationOptions.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
               </SelectItem>

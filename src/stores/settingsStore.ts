@@ -14,10 +14,12 @@ import { COMMANDS, Commands } from "@/utils/commands";
 import { defaultSettings } from "@/utils/defaultSettings";
 import { FDSDevice } from "@/utils/webusb";
 import { create } from "zustand";
+import { subscribeWithSelector } from 'zustand/middleware';
 
 type SettingsStore = {
+  extraAdditionalNotifications: string[],
+  addExtraAdditionalNotification: (notification: string) => void;
   settings: Settings;
-  // Methods to update settings
   setSettings: (newSettings: Settings) => void;
   updateGeneralSetting: (
     key: GeneralSettingsKey,
@@ -69,10 +71,21 @@ export const handleStateUpdateConditionally = <T, U>(
   device.send(message);
 };
 
-const useSettingsStore = create<SettingsStore>((set) => ({
+const useSettingsStore = create(subscribeWithSelector<SettingsStore>((set) => ({
+
+  extraAdditionalNotifications: [],
+
+  addExtraAdditionalNotification: (notification: string) => {
+    set((state: SettingsStore) => ({
+        ...state,
+        extraAdditionalNotifications: [...state.extraAdditionalNotifications, notification],
+
+    }));
+  },
+
   settings: defaultSettings(),
 
-  setSettings: (newSettings: Settings) => set({ settings: newSettings }),
+  setSettings: (_: Settings) => {},
 
   updateGeneralSetting: (
     key: GeneralSettingsKey,
@@ -243,6 +256,6 @@ const useSettingsStore = create<SettingsStore>((set) => ({
       device,
     );
   },
-}));
+})));
 
 export default useSettingsStore;
