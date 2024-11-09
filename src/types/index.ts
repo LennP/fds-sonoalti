@@ -43,7 +43,7 @@ export interface Settings {
 
 export interface AdditionalNotificationChange {
   presetIndex: number;
-  stage: StageSettingsID;
+  stageKey: StageSettingsID;
   additionalNotification: AdditionalNotification;
 }
 

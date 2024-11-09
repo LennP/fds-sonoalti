@@ -265,7 +265,11 @@ export const COMMANDS: Commands = {
           ? "ascendSettings"
           : stage === "f"
             ? "freefallSettings"
-            : "canopySettings";
+            : stage === "c"
+              ? "canopySettings"
+              : undefined;
+      if (stageKey === undefined)
+        throw new Error("Invalid stage for notification: " + stage);
       const altitudeInt = parseInt(altitude, 10);
 
       useSettingsStore
@@ -279,11 +283,17 @@ export const COMMANDS: Commands = {
       console.log("Adding: ", notificationChange);
       const presetIndexOffset = notificationChange.presetIndex + 2;
       const stageChar =
-        notificationChange.stage === "ascendSettings"
+        notificationChange.stageKey === "ascendSettings"
           ? "a"
-          : notificationChange.stage === "freefallSettings"
+          : notificationChange.stageKey === "freefallSettings"
             ? "f"
-            : "c";
+            : notificationChange.stageKey === "canopySettings"
+              ? "c"
+              : undefined;
+      if (stageChar === undefined)
+        throw new Error(
+          "Invalid stage for notification: " + notificationChange.stageKey,
+        );
       const altitudeStr = notificationChange.additionalNotification.altitude
         .toString()
         .padStart(5, "0");
