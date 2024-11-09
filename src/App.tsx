@@ -69,7 +69,7 @@ function App() {
       <Configurator
         device={device}
         dialogOpen={!browserIsSupported || !device}
-        deblurOnConnect={false}
+        deblurOnConnect
       />
     </TooltipProvider>
   );

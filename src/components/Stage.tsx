@@ -7,25 +7,25 @@ import AnnouncementFrequency from "@/components/settings/AnnouncementFrequency";
 import FreefallThreshold from "@/components/settings/FreefallThreshold";
 import Volume from "@/components/settings/Volume";
 import {
+  AdditionalNotification,
   FreefallStageSettings,
-  Notification,
   StageName,
   StageSettings,
-  StageSettingsTypes,
+  StageSettingsValue,
 } from "@/types";
 import React from "react";
 
 interface StageProps {
   stageName: StageName;
   stageSettings: StageSettings | FreefallStageSettings;
-  onChange: (
+  onPresetStageChange: (
     settingKey: keyof StageSettings,
-    value: StageSettingsTypes,
+    value: StageSettingsValue,
   ) =>
     | void
     | ((
         settingKey: keyof FreefallStageSettings,
-        value: StageSettingsTypes,
+        value: StageSettingsValue,
       ) => void);
   notificationOptions: string[];
   speedLabel: string;
@@ -34,7 +34,7 @@ interface StageProps {
 const Stage: React.FC<StageProps> = ({
   stageName,
   stageSettings,
-  onChange,
+  onPresetStageChange,
   notificationOptions,
   speedLabel,
 }) => {
@@ -44,7 +44,7 @@ const Stage: React.FC<StageProps> = ({
         <Volume
           value={stageSettings.volume}
           onChange={(value: number) => {
-            onChange("volume", value);
+            onPresetStageChange("volume", value);
           }}
         />
       </div>
@@ -52,49 +52,50 @@ const Stage: React.FC<StageProps> = ({
         <AbbreviateReadings
           value={stageSettings.abbreviateReadings}
           onChange={(value: boolean) => {
-            onChange("abbreviateReadings", value);
+            onPresetStageChange("abbreviateReadings", value);
           }}
         />
         <Announcement
           altitudeValue={stageSettings.announceAltitude}
           altitudeOnChange={(value: boolean) => {
-            onChange("announceAltitude", value);
+            onPresetStageChange("announceAltitude", value);
           }}
           speedValue={stageSettings.announceSpeed}
           speedOnChange={(value: boolean) => {
-            onChange("announceSpeed", value);
+            onPresetStageChange("announceSpeed", value);
           }}
           speedLabel={speedLabel}
         />
         <AnnouncementFrequency
           value={stageSettings.announcementFrequency}
           onChange={(value: number) => {
-            onChange("announcementFrequency", value);
+            onPresetStageChange("announcementFrequency", value);
           }}
         />
         <AltitudeRange
           fromValue={stageSettings.fromAltitude}
           fromOnChange={(value: number) => {
-            onChange("fromAltitude", value);
+            onPresetStageChange("fromAltitude", value);
           }}
           toValue={stageSettings.toAltitude}
           toOnChange={(value: number) => {
-            onChange("toAltitude", value);
+            onPresetStageChange("toAltitude", value);
           }}
         />
         <AdditionalNotifications
-          notifications={stageSettings.notifications}
-          onAddNotification={(notification: Notification) => {
+          notifications={stageSettings.additionalNotifications}
+          onAddNotification={(notification: AdditionalNotification) => {
             const newNotifications = [
-              ...stageSettings.notifications,
+              ...stageSettings.additionalNotifications,
               notification,
             ];
-            onChange("notifications", newNotifications);
+            onAdd("notifications", newNotifications);
           }}
           onRemoveNotification={(index: number) => {
-            const newNotifications = stageSettings.notifications.filter(
-              (_, i) => i !== index,
-            );
+            const newNotifications =
+              stageSettings.additionalNotifications.filter(
+                (_, i) => i !== index,
+              );
             onChange("notifications", newNotifications);
           }}
           notificationOptions={notificationOptions}
@@ -105,9 +106,9 @@ const Stage: React.FC<StageProps> = ({
               freefallThreshold={stageSettings.freefallThreshold}
               onFreefallThresholdChange={(value: number) => {
                 (
-                  onChange as (
+                  onPresetStageChange as (
                     settingKey: keyof FreefallStageSettings,
-                    value: StageSettingsTypes,
+                    value: StageSettingsValue,
                   ) => void
                 )("freefallThreshold", value);
               }}

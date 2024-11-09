@@ -15,14 +15,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Notification } from "@/types";
+import { AdditionalNotification } from "@/types";
 import React, { useState } from "react";
 import { FaBell } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
 interface AdditionalNotificationsProps {
-  notifications: Notification[];
-  onAddNotification: (notification: Notification) => void;
+  notifications: AdditionalNotification[];
+  onAddNotification: (notification: AdditionalNotification) => void;
   onRemoveNotification: (index: number) => void;
   notificationOptions: string[];
 }

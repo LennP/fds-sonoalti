@@ -45,7 +45,7 @@ export function defaultStageSettings(): StageSettings {
     fromAltitude: 0,
     toAltitude: 10000,
     volume: 5,
-    notifications: [],
+    additionalNotifications: [],
   };
 }
 

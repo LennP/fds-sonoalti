@@ -8,12 +8,13 @@ import useSettingsStore from "@/stores/settingsStore"; // Import the store
 import {
   FreefallStageSettings,
   GeneralSettings,
-  GeneralSettingsTypes,
+  GeneralSettingsValue,
   PresetSettings,
-  PresetSettingsTypes,
+  PresetSettingsValue,
   Settings,
   StageSettings,
-  StageSettingsTypes,
+  StageSettingsID,
+  StageSettingsValue,
 } from "@/types";
 import { downloadFile, parseYAMLFile, toYAML } from "@/utils/file";
 import { FDSDevice } from "@/utils/webusb";
@@ -148,7 +149,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
       {/* Initial Settings */}
       <General
         generalSettings={settings.generalSettings}
-        onChange={(key: keyof GeneralSettings, value: GeneralSettingsTypes) =>
+        onChange={(key: keyof GeneralSettings, value: GeneralSettingsValue) =>
           updateGeneralSetting(key, value, device)
         }
       />
@@ -171,13 +172,14 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         <Preset
           presetNumber={selectedPreset + 1}
           presetSettings={settings.presetSettings[selectedPreset]}
-          onChange={(key: keyof PresetSettings, value: PresetSettingsTypes) =>
-            updatePresetSetting(selectedPreset, key, value, device)
-          }
-          onStageChange={(
-            stageKey: "ascendSettings" | "freefallSettings" | "canopySettings",
+          onPresetChange={(
+            key: keyof PresetSettings,
+            value: PresetSettingsValue,
+          ) => updatePresetSetting(selectedPreset, key, value, device)}
+          onPresetStageChange={(
+            stageKey: StageSettingsID,
             settingKey: keyof StageSettings | keyof FreefallStageSettings,
-            value: StageSettingsTypes,
+            value: StageSettingsValue,
           ) =>
             updatePresetStageSetting(
               selectedPreset,
@@ -196,17 +198,14 @@ const Configurator: React.FC<ConfiguratorProps> = ({
               key={presetIndex}
               presetNumber={presetIndex + 1}
               presetSettings={preset}
-              onChange={(
+              onPresetChange={(
                 key: keyof PresetSettings,
-                value: PresetSettingsTypes,
+                value: PresetSettingsValue,
               ) => updatePresetSetting(presetIndex, key, value, device)}
-              onStageChange={(
-                stageKey:
-                  | "ascendSettings"
-                  | "freefallSettings"
-                  | "canopySettings",
+              onPresetStageChange={(
+                stageKey: StageSettingsID,
                 settingKey: keyof StageSettings | keyof FreefallStageSettings,
-                value: StageSettingsTypes,
+                value: StageSettingsValue,
               ) =>
                 updatePresetStageSetting(
                   presetIndex,

@@ -4,10 +4,11 @@ import Stage from "@/components/Stage";
 import {
   FreefallStageSettings,
   PresetSettings,
-  PresetSettingsTypes,
+  PresetSettingsValue,
   StageName,
   StageSettings,
-  StageSettingsTypes,
+  StageSettingsID,
+  StageSettingsValue,
 } from "@/types";
 import {
   ASCEND_NOTIFICATION_OPTIONS,
@@ -21,25 +22,28 @@ import { GiFalling } from "react-icons/gi";
 interface PresetProps {
   presetNumber: number;
   presetSettings: PresetSettings;
-  onChange: (key: keyof PresetSettings, value: PresetSettingsTypes) => void;
-  onStageChange: (
-    stageKey: "ascendSettings" | "freefallSettings" | "canopySettings",
+  onPresetChange: (
+    key: keyof PresetSettings,
+    value: PresetSettingsValue,
+  ) => void;
+  onPresetStageChange: (
+    stageKey: StageSettingsID,
     settingKey: keyof StageSettings | keyof FreefallStageSettings,
-    value: StageSettingsTypes,
+    value: StageSettingsValue,
   ) => void;
 }
 
 const Preset: React.FC<PresetProps> = ({
   presetNumber,
   presetSettings,
-  onChange,
-  onStageChange,
+  onPresetChange,
+  onPresetStageChange,
 }) => {
   const handleStageChange =
     (key: keyof PresetSettings) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const value: string = event.target.value;
-      onChange(key, value);
+      onPresetChange(key, value);
     };
 
   return (
@@ -78,11 +82,11 @@ const Preset: React.FC<PresetProps> = ({
         <Stage
           stageName={StageName.ASCEND}
           stageSettings={presetSettings.ascendSettings}
-          onChange={(
+          onPresetStageChange={(
             settingKey: keyof StageSettings,
-            value: StageSettingsTypes,
+            value: StageSettingsValue,
           ) => {
-            onStageChange("ascendSettings", settingKey, value);
+            onPresetStageChange("ascendSettings", settingKey, value);
           }}
           notificationOptions={ASCEND_NOTIFICATION_OPTIONS}
           speedLabel="Climb Rate"
@@ -93,11 +97,11 @@ const Preset: React.FC<PresetProps> = ({
         <Stage
           stageName={StageName.FREEFALL}
           stageSettings={presetSettings.freefallSettings}
-          onChange={(
+          onPresetStageChange={(
             settingKey: keyof FreefallStageSettings,
-            value: StageSettingsTypes,
+            value: StageSettingsValue,
           ) => {
-            onStageChange("freefallSettings", settingKey, value);
+            onPresetStageChange("freefallSettings", settingKey, value);
           }}
           notificationOptions={FREEFALL_NOTIFICATION_OPTIONS}
           speedLabel="Freefall Speed"
@@ -108,11 +112,11 @@ const Preset: React.FC<PresetProps> = ({
         <Stage
           stageName={StageName.CANOPY}
           stageSettings={presetSettings.canopySettings}
-          onChange={(
+          onPresetStageChange={(
             settingKey: keyof StageSettings,
-            value: StageSettingsTypes,
+            value: StageSettingsValue,
           ) => {
-            onStageChange("canopySettings", settingKey, value);
+            onPresetStageChange("canopySettings", settingKey, value);
           }}
           notificationOptions={CANOPY_NOTIFICATION_OPTIONS}
           speedLabel="Descent Rate"

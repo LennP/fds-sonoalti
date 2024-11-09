@@ -1,6 +1,6 @@
-export interface Notification {
+export interface AdditionalNotification {
   notification: string;
-  altitude: string;
+  altitude: number;
 }
 
 export interface StageSettings {
@@ -11,12 +11,13 @@ export interface StageSettings {
   fromAltitude: number;
   toAltitude: number;
   volume: number;
-  notifications: Notification[];
+  additionalNotifications: AdditionalNotification[];
 }
 export interface FreefallStageSettings extends StageSettings {
   freefallThreshold: number;
 }
-export type StageSettingsTypes = boolean | number | Notification[];
+export type StageSettingsKey = keyof FreefallStageSettings;
+export type StageSettingsValue = FreefallStageSettings[StageSettingsKey];
 
 export interface PresetSettings {
   lzOffset: string;
@@ -25,24 +26,26 @@ export interface PresetSettings {
   freefallSettings: FreefallStageSettings;
   canopySettings: StageSettings;
 }
-export type PresetSettingsTypes =
-  | string
-  | "higher"
-  | "lower"
-  | StageSettings
-  | FreefallStageSettings;
+export type PresetSettingsKey = keyof PresetSettings;
+export type PresetSettingsValue = PresetSettings[PresetSettingsKey];
 
 export interface GeneralSettings {
   includePreJumpInfo: boolean;
   includePostJumpInfo: boolean;
   useMetric: boolean;
 }
-export type GeneralSettingsTypes = boolean;
+export type GeneralSettingsKey = keyof GeneralSettings;
+export type GeneralSettingsValue = GeneralSettings[GeneralSettingsKey];
 
 export interface Settings {
   generalSettings: GeneralSettings;
   presetSettings: PresetSettings[];
 }
+
+export type StageSettingsID =
+  | "ascendSettings"
+  | "freefallSettings"
+  | "canopySettings";
 
 export enum StageName {
   ASCEND = "ascend",
