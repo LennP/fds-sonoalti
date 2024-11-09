@@ -59,7 +59,6 @@ const Configurator: React.FC<ConfiguratorProps> = ({
       setSettings(importedSettings);
     } catch (error) {
       console.error("Import failed:", error);
-      // Optionally, display an error message to the user
     }
   };
 
