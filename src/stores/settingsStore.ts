@@ -35,7 +35,7 @@ type SettingsStore = {
   updatePresetStageSetting: (
     presetIndex: number,
     stageKey: StageSettingsID,
-    settingKey: StageSettingsValue,
+    settingKey: StageSettingsKey,
     value: StageSettingsValue,
     device?: FDSDevice | null,
   ) => void;
@@ -53,8 +53,8 @@ type SettingsStore = {
   ) => void;
 };
 
-export const handleStateUpdateConditionally = <T, U>(
-  commandHandlerID: keyof Commands<T, U>,
+export const handleStateUpdateConditionally = <T>(
+  commandHandlerID: keyof Commands,
   data: T,
   device: FDSDevice | null | undefined,
 ) => {

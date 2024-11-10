@@ -15,8 +15,15 @@ export type Command<T, U> = {
   generateMessage: (data: U) => string;
 };
 
-export type Commands<T, U> = {
-  [key: string]: Command<T, U>;
+export type Commands = {
+  [key: string]:
+    | Command<[string, string, string], [boolean, boolean, boolean]>
+    | Command<[string, string, string], [number, number, number]>
+    | Command<[string], boolean>
+    | Command<
+        [string, string, string, string, string],
+        AdditionalNotificationChange
+      >;
 };
 
 function createGeneralSettingCommand(
@@ -25,7 +32,7 @@ function createGeneralSettingCommand(
 ): Command<[string], boolean> {
   return {
     pattern: new RegExp(`${letter}([01])`, "g"),
-    handleMessage: ([value]) =>
+    handleMessage: ([value]: [value: string]) =>
       useSettingsStore
         .getState()
         .updateGeneralSetting(settingKey, value === "1"),
@@ -62,7 +69,7 @@ function createPresetPolarNumberCommand(
   );
   return {
     pattern,
-    handleMessage: (values) =>
+    handleMessage: (values: [string, string, string]) =>
       values.forEach((value, index) =>
         useSettingsStore
           .getState()
@@ -83,7 +90,7 @@ function createPresetPolarNumberCommand(
 
 function createPresetStageNumberCommand(
   letter: string,
-  stage: StageSettingsID,
+  stageKey: StageSettingsID,
   settingKey: StageSettingsKey,
   valueLength: number,
 ): Command<[string, string, string], [number, number, number]> {
@@ -93,13 +100,13 @@ function createPresetStageNumberCommand(
   );
   return {
     pattern,
-    handleMessage: (values) =>
-      values.forEach((value, index) =>
+    handleMessage: (values: [string, string, string]) =>
+      values.forEach((value, presetIndex) =>
         useSettingsStore
           .getState()
           .updatePresetStageSetting(
-            index,
-            stage,
+            presetIndex,
+            stageKey,
             settingKey,
             parseInt(value, 10),
           ),
