@@ -70,7 +70,7 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
       setConnectionState(ConnectionButtonState.LoadingSettings);
       onAfterConnect(device);
     } catch (err) {
-      setError("Failed to connect to the Sonoalti device. Please try again.");
+      setError("Failed to connect to device. Try plugging it back in.");
       console.error(err);
       setConnectionState(ConnectionButtonState.Disconnected);
     }
@@ -102,7 +102,9 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
           </div>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        {error && <div className="mb-4 text-red-600">{error}</div>}
+        {error && (
+          <div className="mb-4 text-red-600 text-center font-bold">{error}</div>
+        )}
         <div className="mb-4">
           {fdsDevices.length === 0 ? (
             <div className="flex flex-col items-center text-[#222222]">

@@ -1,10 +1,11 @@
+// webusb.ts
 export class FDSDevice {
   device: USBDevice;
   private interfaceNumber: number | null;
   private endpointIn: number | null;
   private endpointOut: number | null;
   public onReceive: ((data: DataView) => void) | null;
-  public onReceiveError: ((error: any) => void) | null;
+  public onReceiveError: ((error: unknown) => void) | null;
 
   constructor(device: USBDevice) {
     this.device = device;
@@ -16,19 +17,16 @@ export class FDSDevice {
   }
 
   async connect(): Promise<void> {
-    console.log("Connecting");
+    console.log("Connecting...");
     await this.device.open();
 
-    if (this.device.configuration === null) {
+    if (this.device.configuration === null)
       await this.device.selectConfiguration(1);
-    }
 
     const interfaces = this.device.configuration?.interfaces;
+    if (!interfaces) throw new Error("Device has no interfaces");
 
-    if (!interfaces) {
-      throw new Error("Device has no interfaces");
-    }
-
+    // Find endpointNumbers for alternateInterface with interfaceClass 0xff
     interfaces.forEach((iface: USBInterface) => {
       iface.alternates.forEach((alternate: USBAlternateInterface) => {
         if (alternate.interfaceClass === 0xff) {
@@ -49,13 +47,7 @@ export class FDSDevice {
 
     await this.device.claimInterface(this.interfaceNumber);
     await this.device.selectAlternateInterface(this.interfaceNumber, 0);
-    await this.device.controlTransferOut({
-      requestType: "class",
-      recipient: "interface",
-      request: 0x22, // SET_CONTROL_LINE_STATE
-      value: 0x01, // DTR = 1
-      index: this.interfaceNumber,
-    });
+    await this.controlTransferOut(true);
 
     this.readLoop();
     console.log("Sending -");
@@ -63,27 +55,28 @@ export class FDSDevice {
   }
 
   async disconnect(): Promise<void> {
-    if (this.interfaceNumber !== null) {
-      await this.device.controlTransferOut({
-        requestType: "class",
-        recipient: "interface",
-        request: 0x22, // SET_CONTROL_LINE_STATE
-        value: 0x00, // DTR = 0
-        index: this.interfaceNumber,
-      });
-    }
+    if (this.interfaceNumber !== null) await this.controlTransferOut(false);
     await this.device.close();
   }
 
   async send(data: string): Promise<void> {
-    if (this.endpointOut !== null) {
-      await this.device.transferOut(
-        this.endpointOut,
-        new TextEncoder().encode(data),
-      );
-    } else {
-      throw new Error("EndpointOut is not set.");
-    }
+    if (this.endpointOut === null) throw new Error("EndpointOut is not set.");
+    await this.device.transferOut(
+      this.endpointOut,
+      new TextEncoder().encode(data),
+    );
+  }
+
+  private async controlTransferOut(
+    ready: boolean,
+  ): Promise<USBOutTransferResult> {
+    return this.device.controlTransferOut({
+      requestType: "class",
+      recipient: "interface",
+      request: 0x22, // SET_CONTROL_LINE_STATE
+      value: Number(ready), // DTR = ready
+      index: this.interfaceNumber as number,
+    });
   }
 
   // private async readLoop() {
@@ -104,8 +97,7 @@ export class FDSDevice {
             console.error("Serial data is undefined");
             continue;
           }
-          if (this.onReceive)
-            this.onReceive(result.data);
+          if (this.onReceive) this.onReceive(result.data);
         } else {
           throw new Error("EndpointIn is not set.");
         }
