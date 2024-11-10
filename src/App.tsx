@@ -85,7 +85,7 @@ function App() {
   const [device, setDevice] = useState<FDSDevice | null>(null);
   const deviceRef = useRef<FDSDevice | null>(null);
 
-  const [browserIsSupported, setBrowserIsSupported] = useState<boolean>(true);
+  const [browserIsSupported, setBrowserIsSupported] = useState<boolean | null>(null);
 
   const bufferRef = useRef<string>("");
 
@@ -128,11 +128,11 @@ function App() {
   return (
     <TooltipProvider>
       {/* Unsupported Browser Dialog */}
-      <UnsupportedBrowserDialog isOpen={!browserIsSupported} />
+      <UnsupportedBrowserDialog isOpen={browserIsSupported === false} />
 
       {/* Connect Device Dialog */}
       <ConnectDialog
-        isOpen={!device && browserIsSupported}
+        isOpen={!device && browserIsSupported === true}
         onAfterConnect={handleConnect}
       />
 
