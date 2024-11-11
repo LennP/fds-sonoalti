@@ -18,7 +18,7 @@ import {
 import useSettingsStore from "@/stores/settingsStore";
 import { AdditionalNotification } from "@/types";
 import React, { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaPlay } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 
 interface AdditionalNotificationsProps {
@@ -27,6 +27,9 @@ interface AdditionalNotificationsProps {
   onRemoveNotification: (
     additionalNotification: AdditionalNotification,
   ) => void;
+  onPlayNotification: (
+    notification: string,
+  ) => void;
   stageAdditionalNotifications: string[];
 }
 
@@ -34,6 +37,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   additionalNotifications,
   onAddNotification,
   onRemoveNotification,
+  onPlayNotification,
   stageAdditionalNotifications,
 }) => {
   const [additionalNotificationOptions, setAdditionalNotificationOptions] =
@@ -42,7 +46,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   const [selectedNotification, setSelectedNotification] = useState("");
   const [altitude, setAltitude] = useState("");
 
-  const handleAddNotification = () => {
+  const addAdditionalNotification = (_: React.MouseEvent<HTMLButtonElement>) => {
     if (selectedNotification && altitude) {
       onAddNotification({
         notification: selectedNotification,
@@ -116,7 +120,15 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
           className="w-20"
         />
         <span>ft</span>
-        <Button onClick={handleAddNotification} variant="default">
+        <Button
+          onClick={() => {
+            onPlayNotification(selectedNotification);
+          }}
+          variant="secondary"
+        >
+          <FaPlay />
+        </Button>
+        <Button onClick={addAdditionalNotification} variant="default">
           +
         </Button>
       </div>

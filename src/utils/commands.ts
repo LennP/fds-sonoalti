@@ -39,6 +39,7 @@ type NotificationCommand = Command<
   AdditionalNotificationChange
 >;
 type CustomNotificationCommand = Command<[string], void>;
+type PlayNotificationCommand = Command<[string], string>;
 
 // Map each command key to its specific Command type
 export type Commands = {
@@ -70,6 +71,7 @@ export type Commands = {
   dropzoneOffset: PresetPolarNumberCommand;
   notification: NotificationCommand;
   customNotification: CustomNotificationCommand;
+  playNotification: PlayNotificationCommand;
 };
 
 function createGeneralSettingCommand(
@@ -362,9 +364,10 @@ export const COMMANDS: Commands = {
       return `${operation}${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
     },
   },
+  /* Custom notification */
   customNotification: {
     pattern: new RegExp(
-      `a([A-Z][a-z -]+)(?=a[A-Z]|${REQUEST_SETTINGS_COMMAND})`,
+      `p(${possibleNotificationsForRegExp})`,
       "g",
     ),
     handleMessage: ([customNotification]: [string]) => {
@@ -374,6 +377,20 @@ export const COMMANDS: Commands = {
     },
     generateMessage: () => {
       throw new Error("Cannot add custom notifications from client to device");
+    },
+  },
+  /* */
+  playNotification: {
+    pattern: new RegExp(
+      `p([A-Z][a-z -]+)(?=a[A-Z]|${REQUEST_SETTINGS_COMMAND})`,
+      "g",
+    ),
+    handleMessage: ([playNotification]: [string]) => {
+      console.log("Successfully played", playNotification);
+    },
+    generateMessage: (playNotification) => {
+      console.log("Playing notification", playNotification);
+      return `p${playNotification}`;
     },
   },
 };

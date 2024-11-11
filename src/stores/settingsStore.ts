@@ -20,6 +20,10 @@ import { subscribeWithSelector } from "zustand/middleware";
 type SettingsStore = {
   extraAdditionalNotifications: string[];
   addExtraAdditionalNotification: (notification: string) => void;
+  playNotification: (
+    notification: string,
+    device?: FDSDevice | null,
+  ) => void;
   settings: Settings;
   setSettings: (newSettings: Settings) => void;
   updateGeneralSetting: (
@@ -74,6 +78,7 @@ export const handleStateUpdateConditionally = <K extends keyof Commands>(
 
 const useSettingsStore = create(
   subscribeWithSelector<SettingsStore>((set) => ({
+
     extraAdditionalNotifications: [],
 
     addExtraAdditionalNotification: (notification: string) => {
@@ -90,6 +95,13 @@ const useSettingsStore = create(
           ],
         };
       });
+    },
+
+    playNotification: (
+      notification: string,
+      device?: FDSDevice | null,
+    ) => {
+      handleStateUpdateConditionally("playNotification", notification, device);
     },
 
     settings: defaultSettings(),

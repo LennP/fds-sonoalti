@@ -33,6 +33,9 @@ interface StageProps {
   onPresetStageRemoveNotification: (
     additionalNotification: AdditionalNotification,
   ) => void;
+  onPlayNotification: (
+    notification: string,
+  ) => void;
   stageAdditionalNotifications: string[];
   speedLabel: string;
 }
@@ -43,6 +46,7 @@ const Stage: React.FC<StageProps> = ({
   onPresetStageChange,
   onPresetStageAddNotification,
   onPresetStageRemoveNotification,
+  onPlayNotification,
   stageAdditionalNotifications,
   speedLabel,
 }) => {
@@ -102,6 +106,7 @@ const Stage: React.FC<StageProps> = ({
           ) => {
             onPresetStageRemoveNotification(additionalNotification);
           }}
+          onPlayNotification={onPlayNotification}
           stageAdditionalNotifications={stageAdditionalNotifications}
         />
         {stageName === StageName.FREEFALL &&

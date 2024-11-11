@@ -45,6 +45,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
     updatePresetStageSetting,
     addPresetStageNotification,
     removePresetStageNotification,
+    playNotification,
   } = useSettingsStore();
 
   const [selectedPreset, setSelectedPreset] = useState<number>(0);
@@ -117,6 +118,10 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         additionalNotification,
         device,
       ),
+    onPlayNotification: (
+      notification: string,
+    ) => 
+      playNotification(notification, device)
   });
 
   /**
