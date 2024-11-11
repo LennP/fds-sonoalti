@@ -40,9 +40,7 @@ interface PresetProps {
     stageKey: StageSettingsID,
     additionalNotification: AdditionalNotification,
   ) => void;
-  onPlayNotification: (
-    notification: string,
-  ) => void;
+  onPlayNotification: (notification: string) => void;
 }
 
 // Define a type for stage configuration

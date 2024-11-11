@@ -118,10 +118,8 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         additionalNotification,
         device,
       ),
-    onPlayNotification: (
-      notification: string,
-    ) => 
-      playNotification(notification, device)
+    onPlayNotification: (notification: string) =>
+      playNotification(notification, device),
   });
 
   /**

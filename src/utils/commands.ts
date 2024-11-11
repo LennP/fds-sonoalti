@@ -366,10 +366,7 @@ export const COMMANDS: Commands = {
   },
   /* Custom notification */
   customNotification: {
-    pattern: new RegExp(
-      `p(${possibleNotificationsForRegExp})`,
-      "g",
-    ),
+    pattern: new RegExp(`p(${possibleNotificationsForRegExp})`, "g"),
     handleMessage: ([customNotification]: [string]) => {
       useSettingsStore
         .getState()

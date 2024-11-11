@@ -33,9 +33,7 @@ interface StageProps {
   onPresetStageRemoveNotification: (
     additionalNotification: AdditionalNotification,
   ) => void;
-  onPlayNotification: (
-    notification: string,
-  ) => void;
+  onPlayNotification: (notification: string) => void;
   stageAdditionalNotifications: string[];
   speedLabel: string;
 }

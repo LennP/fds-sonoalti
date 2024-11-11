@@ -27,9 +27,7 @@ interface AdditionalNotificationsProps {
   onRemoveNotification: (
     additionalNotification: AdditionalNotification,
   ) => void;
-  onPlayNotification: (
-    notification: string,
-  ) => void;
+  onPlayNotification: (notification: string) => void;
   stageAdditionalNotifications: string[];
 }
 
@@ -46,7 +44,9 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   const [selectedNotification, setSelectedNotification] = useState("");
   const [altitude, setAltitude] = useState("");
 
-  const addAdditionalNotification = (_: React.MouseEvent<HTMLButtonElement>) => {
+  const addAdditionalNotification = (
+    _: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     if (selectedNotification && altitude) {
       onAddNotification({
         notification: selectedNotification,
