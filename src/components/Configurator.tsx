@@ -70,6 +70,12 @@ const Configurator: React.FC<ConfiguratorProps> = ({
     downloadFile(toYAML<Settings>(settings), SETTINGS_FILE_NAME);
   };
 
+  const handleDisconnect = (
+    _: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    device?.disconnect();
+  }
+
   // Use the custom hook to get the current window width
   const width = useWindowWidth();
   const isMobile = width < MOBILE_BREAKPOINT;
@@ -149,6 +155,10 @@ const Configurator: React.FC<ConfiguratorProps> = ({
           alt="Freefall Data Systems Logo"
         />
         <div className="flex">
+          {/* Export */}
+          <Button disabled={device != null} onClick={handleDisconnect} variant="destructive" className="mr-2">
+            Disconnect
+          </Button>
           {/* Export */}
           <Button onClick={handleSettingsExport} className="mr-2">
             <FaFileExport className="mr-2" />

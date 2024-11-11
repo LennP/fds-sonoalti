@@ -16,6 +16,7 @@ enum ConnectionButtonState {
   Disconnected = "Disconnected",
   Connecting = "Connecting",
   LoadingSettings = "LoadingSettings",
+  Connected = "Connected",
 }
 
 interface ConnectDialogProps {
@@ -46,7 +47,7 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
     }
   };
 
-  // Set up interval to fetch devices every 1 second
+  // Set up interval to fetch devices
   useEffect(() => {
     if (isOpen) {
       // Fetch devices immediately when dialog opens
@@ -143,6 +144,7 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
                       {
                         [ConnectionButtonState.Connecting]: "Connecting",
                         [ConnectionButtonState.LoadingSettings]: "Loading",
+                        [ConnectionButtonState.Connected]: "Connected",
                       }[connectionState] || "Connect"
                     }
                   </LoadingButton>
