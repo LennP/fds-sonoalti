@@ -70,7 +70,9 @@ const FreefallThreshold: React.FC<FreefallThresholdProps> = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Label className="cursor-pointer">Freefall Threshold</Label>
+                <div className="text-start cursor-pointer">
+                  <Label>Freefall Threshold</Label>
+                </div>
               </TooltipTrigger>
               <TooltipContent className="bg-black text-white rounded-2xl">
                 <p>
