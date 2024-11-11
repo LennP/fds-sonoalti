@@ -2,8 +2,10 @@
 import useSettingsStore from "@/stores/settingsStore";
 import {
   AdditionalNotificationChange,
+  FreefallStageSettings,
   GeneralSettingsKey,
   PresetSettingsKey,
+  StageSettings,
   StageSettingsID,
   StageSettingsKey,
 } from "@/types";
@@ -15,15 +17,54 @@ export type Command<T, U> = {
   generateMessage: (data: U) => string;
 };
 
+// Define specific command types
+type GeneralSettingCommand = Command<[string], boolean>;
+type PresetStageBooleanCommand = Command<
+  [string, string, string],
+  [boolean, boolean, boolean]
+>;
+type PresetPolarNumberCommand = Command<
+  [string, string, string],
+  [number, number, number]
+>;
+type PresetStageNumberCommand = Command<
+  [string, string, string],
+  [number, number, number]
+>;
+type NotificationCommand = Command<
+  [string, string, string, string, string],
+  AdditionalNotificationChange
+>;
+
+// Map each command key to its specific Command type
 export type Commands = {
-  [key: string]:
-    | Command<[string, string, string], [boolean, boolean, boolean]>
-    | Command<[string, string, string], [number, number, number]>
-    | Command<[string], boolean>
-    | Command<
-        [string, string, string, string, string],
-        AdditionalNotificationChange
-      >;
+  includePreJumpInfo: GeneralSettingCommand;
+  includePostJumpInfo: GeneralSettingCommand;
+  useMetric: GeneralSettingCommand;
+  "ascendSettings.abbreviateReadings": PresetStageBooleanCommand;
+  "freefallSettings.abbreviateReadings": PresetStageBooleanCommand;
+  "canopySettings.abbreviateReadings": PresetStageBooleanCommand;
+  "ascendSettings.announcementFrequency": PresetStageNumberCommand;
+  "freefallSettings.announcementFrequency": PresetStageNumberCommand;
+  "canopySettings.announcementFrequency": PresetStageNumberCommand;
+  "ascendSettings.announceAltitude": PresetStageBooleanCommand;
+  "ascendSettings.announceSpeed": PresetStageBooleanCommand;
+  "freefallSettings.announceAltitude": PresetStageBooleanCommand;
+  "freefallSettings.announceSpeed": PresetStageBooleanCommand;
+  "canopySettings.announceAltitude": PresetStageBooleanCommand;
+  "canopySettings.announceSpeed": PresetStageBooleanCommand;
+  "ascendSettings.fromAltitude": PresetStageNumberCommand;
+  "ascendSettings.toAltitude": PresetStageNumberCommand;
+  "freefallSettings.fromAltitude": PresetStageNumberCommand;
+  "freefallSettings.toAltitude": PresetStageNumberCommand;
+  "canopySettings.fromAltitude": PresetStageNumberCommand;
+  "canopySettings.toAltitude": PresetStageNumberCommand;
+  "ascendSettings.volume": PresetStageNumberCommand;
+  "freefallSettings.volume": PresetStageNumberCommand;
+  "canopySettings.volume": PresetStageNumberCommand;
+  "freefallSettings.freefallThreshold": PresetStageNumberCommand;
+  dropzoneOffset: PresetPolarNumberCommand;
+  notification: NotificationCommand;
 };
 
 function createGeneralSettingCommand(
@@ -40,7 +81,7 @@ function createGeneralSettingCommand(
   };
 }
 
-function createPresetStageBooleanCommand(
+function createPresetStageBooleanCommand<T>(
   letter: string,
   stage: StageSettingsID,
   settingKey: StageSettingsKey,
@@ -51,7 +92,7 @@ function createPresetStageBooleanCommand(
       values.forEach((value, index) =>
         useSettingsStore
           .getState()
-          .updatePresetStageSetting(index, stage, settingKey, value === "1"),
+          .updatePresetStageSetting<T>(index, stage, settingKey, value === "1"),
       ),
     generateMessage: (values: [boolean, boolean, boolean]) =>
       `${letter}${values.map((value) => (value ? "1" : "0")).join("")}`,
@@ -88,7 +129,7 @@ function createPresetPolarNumberCommand(
   };
 }
 
-function createPresetStageNumberCommand(
+function createPresetStageNumberCommand<T = StageSettings>(
   letter: string,
   stageKey: StageSettingsID,
   settingKey: StageSettingsKey,
@@ -104,7 +145,7 @@ function createPresetStageNumberCommand(
       values.forEach((value, presetIndex) =>
         useSettingsStore
           .getState()
-          .updatePresetStageSetting(
+          .updatePresetStageSetting<T>(
             presetIndex,
             stageKey,
             settingKey,
@@ -240,12 +281,13 @@ export const COMMANDS: Commands = {
     "volume",
     2,
   ),
-  "freefallSettings.freefallThreshold": createPresetStageNumberCommand(
-    "Y",
-    "freefallSettings",
-    "freefallThreshold",
-    3,
-  ),
+  "freefallSettings.freefallThreshold":
+    createPresetStageNumberCommand<FreefallStageSettings>(
+      "Y",
+      "freefallSettings",
+      "freefallThreshold",
+      3,
+    ),
   dropzoneOffset: createPresetPolarNumberCommand("Z", "dropzoneOffset", 5),
   /* Additional Notification */
   notification: {

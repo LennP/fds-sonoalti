@@ -70,12 +70,14 @@ export class FDSDevice {
   private async controlTransferOut(
     ready: boolean,
   ): Promise<USBOutTransferResult> {
+    if (this.interfaceNumber === null)
+      throw new Error("InterfaceNumber is not set.");
     return this.device.controlTransferOut({
       requestType: "class",
       recipient: "interface",
       request: 0x22, // SET_CONTROL_LINE_STATE
       value: Number(ready), // DTR = ready
-      index: this.interfaceNumber as number,
+      index: this.interfaceNumber,
     });
   }
 

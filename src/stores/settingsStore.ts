@@ -6,6 +6,7 @@ import {
   PresetSettingsKey,
   PresetSettingsValue,
   Settings,
+  StageSettings,
   StageSettingsID,
   StageSettingsKey,
   StageSettingsValue,
@@ -32,7 +33,7 @@ type SettingsStore = {
     value: PresetSettingsValue,
     device?: FDSDevice | null,
   ) => void;
-  updatePresetStageSetting: (
+  updatePresetStageSetting: <_T>(
     presetIndex: number,
     stageKey: StageSettingsID,
     settingKey: StageSettingsKey,
@@ -53,9 +54,9 @@ type SettingsStore = {
   ) => void;
 };
 
-export const handleStateUpdateConditionally = <T>(
-  commandHandlerID: keyof Commands,
-  data: T,
+export const handleStateUpdateConditionally = <K extends keyof Commands>(
+  commandHandlerID: K,
+  data: Parameters<Commands[K]["generateMessage"]>[0],
   device: FDSDevice | null | undefined,
 ) => {
   // Do not update to device if no device is given
@@ -126,7 +127,7 @@ const useSettingsStore = create(
         };
       });
       handleStateUpdateConditionally(
-        key,
+        key as keyof Commands,
         useSettingsStore
           .getState()
           .settings.presetSettings.map((preset) => preset[key]),
@@ -134,10 +135,10 @@ const useSettingsStore = create(
       );
     },
 
-    updatePresetStageSetting: (
+    updatePresetStageSetting: <T = StageSettings>(
       presetIndex: number,
       stageKey: StageSettingsID,
-      key: StageSettingsKey,
+      key: keyof T,
       value: StageSettingsValue,
       device?: FDSDevice | null,
     ) => {
@@ -159,11 +160,11 @@ const useSettingsStore = create(
         };
       });
       handleStateUpdateConditionally(
-        `${stageKey}.${key}`,
+        `${stageKey}.${String(key)}` as keyof Commands,
         useSettingsStore
           .getState()
           .settings.presetSettings.map(
-            (presetSetting) => presetSetting[stageKey][key],
+            (presetSetting) => (presetSetting[stageKey] as T)[key],
           ),
         device,
       );

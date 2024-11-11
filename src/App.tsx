@@ -13,14 +13,14 @@ const processBuffer = (buffer: string): [string, boolean] => {
   let endOfSettings = false;
 
   // Iterate over each command pattern defined in COMMANDS
-  for (const command_str in COMMANDS) {
-    const { pattern, handleMessage } = COMMANDS[command_str];
+  for (const commandID in COMMANDS) {
+    const { pattern, handleMessage } = COMMANDS[commandID];
     let regex: RegExp = pattern;
 
     // Ensure the regex has the global flag 'g' to find all matches
     if (!pattern.flags.includes("g")) {
       console.warn(
-        `Pattern for "${command_str}" does not have the global flag 'g'. Adding it automatically.`,
+        `Pattern for "${commandID}" does not have the global flag 'g'. Adding it automatically.`,
       );
       const newFlags = pattern.flags.includes("g")
         ? pattern.flags
@@ -29,7 +29,7 @@ const processBuffer = (buffer: string): [string, boolean] => {
         regex = new RegExp(pattern.source, newFlags);
       } catch (error) {
         console.error(
-          `Failed to add 'g' flag to pattern for "${command_str}". Please check the regex syntax.`,
+          `Failed to add 'g' flag to pattern for "${commandID}". Please check the regex syntax.`,
           error,
         );
         continue;
