@@ -70,11 +70,10 @@ const Configurator: React.FC<ConfiguratorProps> = ({
     downloadFile(toYAML<Settings>(settings), SETTINGS_FILE_NAME);
   };
 
-  const handleDisconnect = (
-    _: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    device?.disconnect();
-  }
+  const handleDisconnect = async (_: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("Disconnecting...");
+    await device?.disconnect();
+  };
 
   // Use the custom hook to get the current window width
   const width = useWindowWidth();
@@ -156,7 +155,12 @@ const Configurator: React.FC<ConfiguratorProps> = ({
         />
         <div className="flex">
           {/* Export */}
-          <Button disabled={device != null} onClick={handleDisconnect} variant="destructive" className="mr-2">
+          <Button
+            disabled={!device}
+            onClick={handleDisconnect}
+            variant="destructive"
+            className="mr-2"
+          >
             Disconnect
           </Button>
           {/* Export */}

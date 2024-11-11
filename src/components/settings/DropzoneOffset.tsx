@@ -76,7 +76,11 @@ const DropzoneOffset: React.FC<DropzoneOffsetProps> = ({
         <Tooltip>
           <TooltipTrigger>
             <div className="flex text-start cursor-pointer">
-              <FaMountain size={15} className="mr-2" title="Abbreviate Readings" />
+              <FaMountain
+                size={15}
+                className="mr-2"
+                title="Abbreviate Readings"
+              />
               <Label className="cursor-pointer">Dropzone Offset</Label>
             </div>
           </TooltipTrigger>

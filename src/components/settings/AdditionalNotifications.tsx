@@ -143,13 +143,20 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         {additionalNotifications.map((item, index) => (
           <li key={index} className="flex items-center">
             <div
-              className="flex justify-center items-center mr-2 bg-red-400 text-white w-4 h-4 rounded-[6px] cursor-pointer"
+              className="flex justify-center items-center mr-2 bg-red-400 text-white min-w-4 min-h-4 w-4 h-4 rounded-[6px] cursor-pointer"
               onClick={() => onRemoveNotification(item)}
             >
               <FaX size="0.5em" />
             </div>
-            <p className="text-sm italic">{item.notification}</p>
-            <p className="text-sm">&nbsp;at {item.altitude} feet</p>
+            <div className="flex flex-wrap items-center">
+              <span className="text-sm italic text-wrap">
+                {item.notification}
+              </span>
+              &nbsp;
+              <span className="text-sm text-wrap">at</span>
+              &nbsp;
+              <span className="text-sm text-wrap">{item.altitude} feet</span>
+            </div>
           </li>
         ))}
       </ul>
