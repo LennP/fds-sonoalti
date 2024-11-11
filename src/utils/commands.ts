@@ -364,9 +364,12 @@ export const COMMANDS: Commands = {
       return `${operation}${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
     },
   },
-  /* Custom notification */
+  /* Custom Notification */
   customNotification: {
-    pattern: new RegExp(`p(${possibleNotificationsForRegExp})`, "g"),
+    pattern: new RegExp(
+      `a([A-Z][a-z -]+)(?=a[A-Z]|${REQUEST_SETTINGS_COMMAND})`,
+      "g",
+    ),
     handleMessage: ([customNotification]: [string]) => {
       useSettingsStore
         .getState()
@@ -376,12 +379,9 @@ export const COMMANDS: Commands = {
       throw new Error("Cannot add custom notifications from client to device");
     },
   },
-  /* */
+  /* Play Notification */
   playNotification: {
-    pattern: new RegExp(
-      `p([A-Z][a-z -]+)(?=a[A-Z]|${REQUEST_SETTINGS_COMMAND})`,
-      "g",
-    ),
+    pattern: new RegExp(`p(${possibleNotificationsForRegExp})`, "g"),
     handleMessage: ([playNotification]: [string]) => {
       console.log("Successfully played", playNotification);
     },

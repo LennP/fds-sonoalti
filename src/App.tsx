@@ -45,7 +45,7 @@ const processBuffer = (buffer: string): [string, boolean] => {
 
         // Extract the matched command
         const matchedCommand = match[0];
-        console.log("Matched command:", matchedCommand);
+        console.log(" > Matched command:", matchedCommand);
 
         // Call the handler with captured groups (excluding the full match)
         handleMessage(match.slice(1));
@@ -106,9 +106,9 @@ function App() {
       };
       device.onReceive = (dataView: DataView) => {
         const data = new TextDecoder().decode(dataView);
-        console.log("Received data chunk from device:", data);
+        console.log("Received data from device:", data);
         bufferRef.current += data;
-        console.log("Updated buffer:", bufferRef.current);
+        console.log(" > Updated buffer:", bufferRef.current);
 
         const [newBuffer, endOfSettingsReceived] = processBuffer(
           bufferRef.current,
