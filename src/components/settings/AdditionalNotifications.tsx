@@ -60,8 +60,14 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         return state.extraAdditionalNotifications;
       },
       (extraNotifications, _prev) =>
+        // Filter out duplicates and sort
         setAdditionalNotificationOptions(
-          [...additionalNotificationOptions, ...extraNotifications].sort(),
+          [
+            ...new Set([
+              ...additionalNotificationOptions,
+              ...extraNotifications,
+            ]),
+          ].sort(),
         ),
     );
     return () => unsubscribe();

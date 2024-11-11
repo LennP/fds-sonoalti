@@ -9,7 +9,10 @@ import {
   StageSettingsID,
   StageSettingsKey,
 } from "@/types";
-import { possibleNotificationsForRegExp } from "./notifications";
+import {
+  possibleNotificationsForRegExp,
+  REQUEST_SETTINGS_COMMAND,
+} from "./notifications";
 
 export type Command<T, U> = {
   pattern: RegExp;
@@ -35,6 +38,7 @@ type NotificationCommand = Command<
   [string, string, string, string, string],
   AdditionalNotificationChange
 >;
+type CustomNotificationCommand = Command<[string], void>;
 
 // Map each command key to its specific Command type
 export type Commands = {
@@ -65,6 +69,7 @@ export type Commands = {
   "freefallSettings.freefallThreshold": PresetStageNumberCommand;
   dropzoneOffset: PresetPolarNumberCommand;
   notification: NotificationCommand;
+  customNotification: CustomNotificationCommand;
 };
 
 function createGeneralSettingCommand(
@@ -355,6 +360,20 @@ export const COMMANDS: Commands = {
         notificationChange.additionalNotification.notification;
       const operation = notificationChange.add ? "+" : "-";
       return `${operation}${presetIndexOffset}${stageChar}${altitudeStr}${notification}`;
+    },
+  },
+  customNotification: {
+    pattern: new RegExp(
+      `a([A-Z][a-z -]+)(?=a[A-Z]|${REQUEST_SETTINGS_COMMAND})`,
+      "g",
+    ),
+    handleMessage: ([customNotification]: [string]) => {
+      useSettingsStore
+        .getState()
+        .addExtraAdditionalNotification(customNotification);
+    },
+    generateMessage: () => {
+      throw new Error("Cannot add custom notifications from client to device");
     },
   },
 };

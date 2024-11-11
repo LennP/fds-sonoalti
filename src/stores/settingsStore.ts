@@ -77,13 +77,19 @@ const useSettingsStore = create(
     extraAdditionalNotifications: [],
 
     addExtraAdditionalNotification: (notification: string) => {
-      set((state: SettingsStore) => ({
-        ...state,
-        extraAdditionalNotifications: [
-          ...state.extraAdditionalNotifications,
-          notification,
-        ],
-      }));
+      set((state: SettingsStore) => {
+        if (state.extraAdditionalNotifications.includes(notification)) {
+          console.error(`Extra notification ${notification} already exists`);
+          return state;
+        }
+        return {
+          ...state,
+          extraAdditionalNotifications: [
+            ...state.extraAdditionalNotifications,
+            notification,
+          ],
+        };
+      });
     },
 
     settings: defaultSettings(),

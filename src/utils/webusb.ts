@@ -1,3 +1,5 @@
+import { REQUEST_SETTINGS_COMMAND } from "./notifications";
+
 // webusb.ts
 export class FDSDevice {
   device: USBDevice;
@@ -50,8 +52,8 @@ export class FDSDevice {
     await this.controlTransferOut(true);
 
     this.readLoop();
-    console.log("Sending -");
-    this.send("-");
+    console.log(`Sending ${REQUEST_SETTINGS_COMMAND}`);
+    this.send(REQUEST_SETTINGS_COMMAND);
   }
 
   async disconnect(): Promise<void> {

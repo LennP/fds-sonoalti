@@ -1,3 +1,5 @@
+export const REQUEST_SETTINGS_COMMAND = "¬"; // Can be anything
+
 export const ASCEND_NOTIFICATION_OPTIONS = [
   "Approaching exit altitude",
   "Assess ground speed",
