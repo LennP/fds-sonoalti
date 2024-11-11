@@ -112,7 +112,7 @@ export class FDSDevice {
   }
 }
 
-export async function getFDSDevices(): Promise<FDSDevice[]> {
+export async function getPairedFDSDevices(): Promise<FDSDevice[]> {
   const devices: USBDevice[] = await navigator.usb.getDevices();
   const fdsDevices: USBDevice[] = devices.filter(
     (device) => device.vendorId === 0x239a,
@@ -120,7 +120,7 @@ export async function getFDSDevices(): Promise<FDSDevice[]> {
   return fdsDevices.map((device: USBDevice) => new FDSDevice(device));
 }
 
-export async function findFDSDevice(): Promise<FDSDevice> {
+export async function requestFDSDevice(): Promise<FDSDevice> {
   const filters: USBDeviceFilter[] = [{ vendorId: 0x239a }]; // Adafruit vendor ID
   const device = await navigator.usb.requestDevice({ filters });
   return new FDSDevice(device);

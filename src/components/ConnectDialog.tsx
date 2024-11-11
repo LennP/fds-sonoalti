@@ -6,10 +6,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { FDSDevice, getFDSDevices } from "@/utils/webusb";
+import {
+  FDSDevice,
+  getPairedFDSDevices,
+  requestFDSDevice,
+} from "@/utils/webusb";
 import React, { useEffect, useState } from "react";
-import { FaUsb } from "react-icons/fa";
-import PuffLoader from "react-spinners/PuffLoader";
+import { FaUsb } from "react-icons/fa6";
+import { Button } from "./ui/button";
 import { LoadingButton } from "./ui/loading-button";
 
 enum ConnectionButtonState {
@@ -34,17 +38,21 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
     ConnectionButtonState.Disconnected,
   );
   const [error, setError] = useState<string | null>(null);
-  const [fdsDevices, setFdsDevices] = useState<FDSDevice[]>([]);
+  const [pairedFDSDevices, setPairedFDSDevices] = useState<FDSDevice[]>([]);
 
   // Function to fetch FDS devices
   const fetchFDSDevices = async () => {
     try {
-      const devices = await getFDSDevices(); // Ensure getFDSDevices returns SerialPort[]
-      setFdsDevices(devices);
+      const devices = await getPairedFDSDevices();
+      setPairedFDSDevices(devices);
     } catch (err) {
       console.error("Error fetching FDS devices:", err);
       // Optionally, set an error state here if fetching devices can fail
     }
+  };
+
+  const pairFDSDevice = async () => {
+    requestFDSDevice().catch(() => {});
   };
 
   // Set up interval to fetch devices
@@ -107,28 +115,19 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
           <div className="mb-4 text-red-600 text-center font-bold">{error}</div>
         )}
         <div className="mb-4">
-          {fdsDevices.length === 0 ? (
-            <div className="flex flex-col items-center text-[#222222]">
-              Searching...
-              <PuffLoader
-                className="mt-1"
-                color="#222222"
-                size={30}
-                speedMultiplier={1}
-              />
-            </div>
-          ) : (
+          {pairedFDSDevices.length !== 0 && (
             <ul>
-              {fdsDevices.map((device, index) => (
+              {pairedFDSDevices.map((device, index) => (
                 <li
                   key={index}
-                  className="flex items-center justify-between mb-2"
+                  className="flex items-center justify-between mb-6"
                 >
-                  <div className="flex flex-col items-center flex-1">
+                  <div className="flex flex-col items-center mr-8">
                     <p>{device.device.productName}</p>
                     <p className="text-xs">({device.device.serialNumber})</p>
                   </div>
                   <LoadingButton
+                    className="flex-1"
                     onClick={() => connect(device)}
                     disabled={
                       connectionState === ConnectionButtonState.Connecting ||
@@ -152,6 +151,16 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
               ))}
             </ul>
           )}
+          <div className="flex flex-col items-center text-[#222222]">
+            <Button
+              className="w-full focus-visible:ring-0"
+              onClick={pairFDSDevice}
+              variant={pairedFDSDevices.length > 0 ? "secondary" : "default"}
+            >
+              <FaUsb></FaUsb>
+              Pair {pairedFDSDevices.length > 0 ? "other" : ""} altimeter
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
