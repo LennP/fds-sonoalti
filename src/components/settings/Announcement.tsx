@@ -28,11 +28,13 @@ const Announcement: React.FC<AnnouncementProps> = ({
   return (
     <div className="mb-4 flex items-center justify-between">
       <div className="flex items-center">
-        <FaBullhorn size={15} className="mr-2" title="Announcement" />
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Label className="cursor-pointer">Announcement</Label>
+              <div className="flex text-start cursor-pointer">
+                <FaBullhorn size={15} className="mr-2" title="Announcement" />
+                <Label className="cursor-pointer">Announcement</Label>
+              </div>
             </TooltipTrigger>
             <TooltipContent className="bg-black text-white rounded-2xl">
               <p>

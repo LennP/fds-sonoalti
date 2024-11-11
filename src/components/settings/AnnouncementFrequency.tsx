@@ -30,16 +30,16 @@ const AnnouncementFrequency: React.FC<AnnouncementFrequencyProps> = ({
   return (
     <div className="mb-4 flex items-center justify-between">
       <div className="flex items-center">
-        <FaWaveSquare
-          size={15}
-          className="mr-2"
-          title="Announcement Frequency"
-        />
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <div className="cursor-pointer text-start">
-                <Label>Announcement Frequency</Label>
+              <div className="flex text-start cursor-pointer">
+                <FaWaveSquare
+                  size={15}
+                  className="mr-2"
+                  title="Announcement Frequency"
+                />
+                <Label className="cursor-pointer">Announcement Frequency</Label>
               </div>
             </TooltipTrigger>
             <TooltipContent className="bg-black text-white rounded-2xl">

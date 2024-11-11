@@ -97,12 +97,12 @@ const AltitudeRange: React.FC<AltitudeRangeProps> = ({
   return (
     <div className="mb-4 flex items-center justify-between">
       <div className="flex items-center">
-        <FaMountain size={15} className="mr-2" title="Altitude Range" />
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <div className="cursor-pointer text-start">
-                <Label>Altitude Range</Label>
+              <div className="flex text-start cursor-pointer">
+                <FaMountain size={15} className="mr-2" title="Altitude Range" />
+                <Label className="cursor-pointer">Altitude Range</Label>
               </div>
             </TooltipTrigger>
             <TooltipContent className="bg-black text-white rounded-2xl">

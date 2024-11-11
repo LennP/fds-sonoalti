@@ -66,11 +66,15 @@ const FreefallThreshold: React.FC<FreefallThresholdProps> = ({
       <div className="flex items-center justify-between">
         {/* Label and Tooltip */}
         <div className="flex items-center">
-          <GiFalling size={24} className="mr-2" title="Freefall Threshold" />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <div className="text-start cursor-pointer">
+                <div className="flex text-start cursor-pointer">
+                  <GiFalling
+                    size={15}
+                    className="mr-2"
+                    title="Freefall Threshold"
+                  />
                   <Label>Freefall Threshold</Label>
                 </div>
               </TooltipTrigger>

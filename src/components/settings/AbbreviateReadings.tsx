@@ -21,10 +21,16 @@ const AbbreviateReadings: React.FC<AbbreviateReadingsProps> = ({
   return (
     <div className="mb-4 flex items-center justify-between">
       <div className="flex items-center">
-        <MdShortText size={15} className="mr-2" title="Abbreviate Readings" />
         <Tooltip>
           <TooltipTrigger>
-            <Label className="cursor-pointer">Abbreviate Readings</Label>
+            <div className="flex text-start cursor-pointer">
+              <MdShortText
+                size={15}
+                className="mr-2"
+                title="Abbreviate Readings"
+              />
+              <Label className="cursor-pointer">Abbreviate Readings</Label>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="bg-black text-white rounded-2xl w-64">
             <p>

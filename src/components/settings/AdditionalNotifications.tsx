@@ -81,13 +81,19 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
     <div className="mb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <FaBell size={15} className="mr-2" title="Additional Notifications" />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Label className="cursor-pointer">
-                  Additional Notifications
-                </Label>
+                <div className="flex text-start cursor-pointer">
+                  <FaBell
+                    size={15}
+                    className="mr-2"
+                    title="Additional Notifications"
+                  />
+                  <Label className="cursor-pointer">
+                    Additional Notifications
+                  </Label>
+                </div>
               </TooltipTrigger>
               <TooltipContent className="bg-black text-white rounded-2xl">
                 <p>Add custom notifications at specific altitudes.</p>
