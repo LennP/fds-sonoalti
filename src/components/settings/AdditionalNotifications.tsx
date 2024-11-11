@@ -127,6 +127,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         />
         <span>ft</span>
         <Button
+          className="bg-white shadow-none w-8"
           disabled={!selectedNotification}
           onClick={() => {
             onPlayNotification(selectedNotification);
