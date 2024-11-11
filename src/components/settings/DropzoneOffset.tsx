@@ -80,7 +80,7 @@ const DropzoneOffset: React.FC<DropzoneOffsetProps> = ({
               <Label className="cursor-pointer">Dropzone Offset</Label>
             </div>
           </TooltipTrigger>
-          <TooltipContent className="bg-black text-white rounded-2xl w-64">
+          <TooltipContent className="bg-black text-white rounded-2xl w-64 p-2 text-xs">
             <p>
               Indicate how much higher or lower your landing area from your
               takeoff altitude is.
