@@ -121,6 +121,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         />
         <span>ft</span>
         <Button
+          disabled={!selectedNotification}
           onClick={() => {
             onPlayNotification(selectedNotification);
           }}
