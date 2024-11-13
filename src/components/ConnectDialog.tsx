@@ -17,10 +17,10 @@ import { Button } from "./ui/button";
 import { LoadingButton } from "./ui/loading-button";
 
 enum ConnectionButtonState {
-  Disconnected = "Disconnected",
-  Connecting = "Connecting",
-  LoadingSettings = "LoadingSettings",
-  Connected = "Connected",
+  DISCONNECTED = "Connect",
+  CONNECTING = "Connecting",
+  LOADING_SETTINGS = "Loading",
+  CONNECTED = "Connected",
 }
 
 interface ConnectDialogProps {
@@ -34,11 +34,17 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
   isOpen,
   onAfterConnect,
 }) => {
-  const [connectionState, setConnectionState] = useState<ConnectionButtonState>(
-    ConnectionButtonState.Disconnected,
-  );
-  const [error, setError] = useState<string | null>(null);
+  const [connectionState, setConnectionState] = useState<[FDSDevice, ConnectionButtonState] | null>(null);
   const [pairedFDSDevices, setPairedFDSDevices] = useState<FDSDevice[]>([]);
+
+  const [error, _setError] = useState<string | null>(null);
+  const [showError, _setShowError] = useState<boolean>(false);
+
+  const flashError = async (error: string) => {
+    _setError(error);
+    _setShowError(true);
+    setTimeout(() => _setShowError(false), 1000);
+  }
 
   // Function to fetch FDS devices
   const fetchFDSDevices = async () => {
@@ -47,7 +53,6 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
       setPairedFDSDevices(devices);
     } catch (err) {
       console.error("Error fetching FDS devices:", err);
-      // Optionally, set an error state here if fetching devices can fail
     }
   };
 
@@ -58,6 +63,9 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
   // Set up interval to fetch devices
   useEffect(() => {
     if (isOpen) {
+      // Set connection state to null when dialog opens
+      setConnectionState(null);
+
       // Fetch devices immediately when dialog opens
       fetchFDSDevices();
 
@@ -71,24 +79,23 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
   }, [isOpen]);
 
   const connect = async (device: FDSDevice) => {
-    setConnectionState(ConnectionButtonState.Connecting);
-    setError(null);
+    setConnectionState([device, ConnectionButtonState.CONNECTING]);
     try {
       await device.connect(); // Attempt to establish a connection
 
-      setConnectionState(ConnectionButtonState.LoadingSettings);
+      setConnectionState([device, ConnectionButtonState.LOADING_SETTINGS]);
       onAfterConnect(device);
     } catch (err) {
-      setError("Failed to connect to device. Try plugging it back in.");
+      flashError("Failed to connect to device. Try plugging it back in.");
       console.error(err);
-      setConnectionState(ConnectionButtonState.Disconnected);
+      setConnectionState([device, ConnectionButtonState.DISCONNECTED]);
     }
   };
 
   return (
     <Dialog open={isOpen}>
       <DialogContent className="[&>button]:hidden focus:outline-none ring-0">
-        <DialogHeader className="flex flex-col items-center mb-6">
+        <DialogHeader className="flex flex-col items-center mb-2">
           <DialogTitle className="text-center text-xl mb-2">
             Connect to Altimeter
           </DialogTitle>
@@ -111,40 +118,52 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
           </div>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        {error && (
-          <div className="mb-4 text-red-600 text-center font-bold">{error}</div>
-        )}
-        <div className="mb-4">
+          <div
+            style={{
+              opacity: showError ? 1 : 0,
+            }}
+            className="text-red-600 text-center font-bold text-sm mb-2 transition-opacity h-3 ease-in-out duration-1000"
+          >
+            {error}
+          </div>
+        <div className="mb-1">
           {pairedFDSDevices.length !== 0 && (
             <ul>
-              {pairedFDSDevices.map((device, index) => (
+              {pairedFDSDevices.map((fdsDevice, fdsDeviceIndex) => (
                 <li
-                  key={index}
+                  key={fdsDeviceIndex}
                   className="flex items-center justify-between mb-6"
                 >
                   <div className="flex flex-col items-center mr-8">
-                    <p>{device.device.productName}</p>
-                    <p className="text-xs">({device.device.serialNumber})</p>
+                    <p>{fdsDevice.device.productName}</p>
+                    <p className="text-xs">({fdsDevice.device.serialNumber})</p>
                   </div>
                   <LoadingButton
                     className="flex-1"
-                    onClick={() => connect(device)}
+                    onClick={() => connect(fdsDevice)}
                     disabled={
-                      connectionState === ConnectionButtonState.Connecting ||
-                      connectionState === ConnectionButtonState.LoadingSettings
+                      connectionState !== null
+                        && [
+                          ConnectionButtonState.CONNECTING,
+                          ConnectionButtonState.LOADING_SETTINGS
+                        ].includes(connectionState[1])
                     }
-                    loading={[
-                      ConnectionButtonState.Connecting,
-                      ConnectionButtonState.LoadingSettings,
-                    ].includes(connectionState)}
+                    loading={
+                      connectionState !== null
+                      && connectionState[0].device.serialNumber === fdsDevice.device.serialNumber
+                      && [
+                        ConnectionButtonState.CONNECTING,
+                        ConnectionButtonState.LOADING_SETTINGS,
+                      ].includes(connectionState[1])
+                    }
                   >
                     {
-                      // @ts-expect-error has default value
-                      {
-                        [ConnectionButtonState.Connecting]: "Connecting",
-                        [ConnectionButtonState.LoadingSettings]: "Loading",
-                        [ConnectionButtonState.Connected]: "Connected",
-                      }[connectionState] || "Connect"
+                      (
+                        connectionState !== null
+                        && connectionState[0].device.serialNumber === fdsDevice.device.serialNumber
+                      )
+                      ? connectionState[1]
+                      : "Connect"
                     }
                   </LoadingButton>
                 </li>

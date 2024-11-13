@@ -93,6 +93,7 @@ function App() {
 
   const handleConnect = (device: FDSDevice) => {
     deviceRef.current = device;
+    bufferRef.current = "";
 
     if (browserIsSupported) {
       navigator.usb.ondisconnect = (event: USBConnectionEvent) => {
