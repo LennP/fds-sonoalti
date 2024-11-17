@@ -148,11 +148,11 @@ const Configurator: React.FC<ConfiguratorProps> = ({
     >
       {/* Preset Tabs and Export/Import Buttons */}
       <div className="flex justify-between items-center mb-4">
-        <img
+        {/* <img
           className="w-32"
           src="https://freefalldatasystems.com/image/original_logo_w_text_no_blur.svg"
           alt="Freefall Data Systems Logo"
-        />
+        /> */}
         <div className="flex">
           {/* Export */}
           <Button
