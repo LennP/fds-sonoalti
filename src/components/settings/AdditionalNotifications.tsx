@@ -46,8 +46,8 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
     useState(stageAdditionalNotifications.sort());
 
   const [selectedNotification, setSelectedNotification] = useState<string>("");
-  const [localAltitude, setLocalAltitude] = useState<number>(NaN);
-  const [altitude, setAltitude] = useState<number>(NaN);
+  const [localAltitude, setLocalAltitude] = useState<string>("");
+  const [altitude, setAltitude] = useState<string>("");
 
   const addAdditionalNotification = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -58,21 +58,23 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         altitude: Number(altitude),
       });
       setSelectedNotification("");
-      setAltitude(NaN);
+      setAltitude("");
     }
   };
 
   const handleOnBlur = (_e: React.FocusEvent<HTMLInputElement>) => {
-    let num = localAltitude;
+    let num = Number(localAltitude);
+    if (isNaN(num))
+      num = MIN_ALTITUDE_ADDITIONAL_NOTIFICATION;
+
     // Limit the range of the value the user can fill in
-    if (!isNaN(num))
-      num = clamp(
-        num,
-        MIN_ALTITUDE_ADDITIONAL_NOTIFICATION,
-        MAX_ALTITUDE_ADDITIONAL_NOTIFICATION,
-      );
-    setLocalAltitude(num);
-    setAltitude(num);
+    num = clamp(
+      num,
+      MIN_ALTITUDE_ADDITIONAL_NOTIFICATION,
+      MAX_ALTITUDE_ADDITIONAL_NOTIFICATION,
+    );
+    setLocalAltitude(num.toString());
+    setAltitude(num.toString());
   };
 
   useEffect(() => {
@@ -139,7 +141,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         <Input
           type="number"
           value={localAltitude}
-          onChange={(e) => setLocalAltitude(parseInt(e.target.value, 10))}
+          onChange={(e) => setLocalAltitude(e.target.value)}
           onBlur={handleOnBlur}
           placeholder="Altitude"
           className="w-20"
