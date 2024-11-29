@@ -62,7 +62,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
     }
   };
 
-  const handleOnBlur = (_e: React.FocusEvent<HTMLInputElement>) => {
+  const handleOnAltitudeBlur = (_e: React.FocusEvent<HTMLInputElement>) => {
     let num = Number(localAltitude);
     if (isNaN(num))
       num = MIN_ALTITUDE_ADDITIONAL_NOTIFICATION;
@@ -142,7 +142,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
           type="number"
           value={localAltitude}
           onChange={(e) => setLocalAltitude(e.target.value)}
-          onBlur={handleOnBlur}
+          onBlur={handleOnAltitudeBlur}
           placeholder="Altitude"
           className="w-20"
         />
