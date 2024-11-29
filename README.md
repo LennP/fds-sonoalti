@@ -39,7 +39,6 @@ You can build the application yourself using either standard Node.JS commands or
 
 Alternatively, you can use Docker to build the application:
 
-
 1. Open a terminal and navigate to the project’s root directory.
 2. Execute the following Docker command to build the application:
 

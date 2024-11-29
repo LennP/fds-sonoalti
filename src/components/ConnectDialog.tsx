@@ -25,13 +25,16 @@ enum ConnectionButtonState {
 
 interface ConnectDialogProps {
   isOpen: boolean;
+  receivingSettings: boolean;
   onAfterConnect: (device: FDSDevice) => void;
 }
 
 const DEVICE_SCAN_INTERVAL: number = 200; // milliseconds
+const CHECK_RECEIVING_SETTINGS_TIMEOUT = 1000; // milliseconds
 
 const ConnectDialog: React.FC<ConnectDialogProps> = ({
   isOpen,
+  receivingSettings,
   onAfterConnect,
 }) => {
   const [connectionState, setConnectionState] = useState<
@@ -87,6 +90,13 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
 
       setConnectionState([device, ConnectionButtonState.LOADING_SETTINGS]);
       onAfterConnect(device);
+      setTimeout(() => {
+        // Check if app is receiving settings from device
+        if (!receivingSettings) {
+          setConnectionState([device, ConnectionButtonState.DISCONNECTED]);
+          flashError("Failed to load settings. Try reconnecting the device.");
+        }
+      }, CHECK_RECEIVING_SETTINGS_TIMEOUT);
     } catch (err) {
       flashError("Failed to connect to device. Try plugging it back in.");
       console.error(err);

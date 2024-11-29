@@ -8,9 +8,20 @@ import { useEffect, useRef, useState } from "react";
 import useSettingsStore from "./stores/settingsStore";
 import { COMMANDS } from "./utils/commands";
 
-const processBuffer = (buffer: string): [string, boolean] => {
+const processBuffer = (buffer: string): [string, boolean, boolean] => {
   let matchedSomeCommand = false;
+  let startOfSettings = false;
   let endOfSettings = false;
+
+  // Special handling for beginning of settings, e.g. "n41"
+  const startSettingsMatch = buffer.match(/n[0-9]{1,2}/);
+  if (startSettingsMatch) {
+    matchedSomeCommand = true;
+    startOfSettings = true;
+
+    // Remove the matched "nXX" from the buffer
+    buffer = buffer.replace(startSettingsMatch[0], "");
+  }
 
   // Iterate over each command pattern defined in COMMANDS
   for (const commandID in COMMANDS) {
@@ -78,10 +89,11 @@ const processBuffer = (buffer: string): [string, boolean] => {
     console.warn("No complete command matched in the buffer:", buffer);
   }
 
-  return [buffer, endOfSettings];
+  return [buffer, endOfSettings, startOfSettings];
 };
 
 function App() {
+  const [receivingSettings, setReceivingSettings] = useState<boolean>(false);
   const [device, setDevice] = useState<FDSDevice | null>(null);
   const deviceRef = useRef<FDSDevice | null>(null);
 
@@ -97,7 +109,9 @@ function App() {
 
     if (browserIsSupported) {
       navigator.usb.ondisconnect = (event: USBConnectionEvent) => {
-        console.log(`Device physically disconnected (${event.device.serialNumber})`);
+        console.log(
+          `Device physically disconnected (${event.device.serialNumber})`,
+        );
         if (
           !deviceRef.current ||
           event.device.serialNumber !== deviceRef.current.device.serialNumber
@@ -105,24 +119,28 @@ function App() {
           return;
         setDevice(null);
         deviceRef.current = null;
+        setReceivingSettings(false);
       };
       device.onDisconnect = (device: FDSDevice) => {
-        console.log(`Device manually disconnected (${device.device.serialNumber})`);
+        console.log(
+          `Device manually disconnected (${device.device.serialNumber})`,
+        );
         setDevice(null);
         deviceRef.current = null;
-      }
+        setReceivingSettings(false);
+      };
       device.onReceive = (dataView: DataView) => {
         const data = new TextDecoder().decode(dataView);
         console.log("Received data from device:", data);
         bufferRef.current += data;
         console.log(" > Updated buffer:", bufferRef.current);
 
-        const [newBuffer, endOfSettingsReceived] = processBuffer(
-          bufferRef.current,
-        );
+        const [newBuffer, endOfSettingsReceived, startOfSettingsReceived] =
+          processBuffer(bufferRef.current);
         bufferRef.current = newBuffer;
         // If end of settings is received, set the device
         if (endOfSettingsReceived) setDevice(device);
+        if (startOfSettingsReceived) setReceivingSettings(true);
       };
       device.onReceiveError = (error) => console.error("Receive Error:", error);
     }
@@ -141,6 +159,7 @@ function App() {
       {/* Connect Device Dialog */}
       <ConnectDialog
         isOpen={!device && browserIsSupported === true}
+        receivingSettings={receivingSettings}
         onAfterConnect={handleConnect}
       />
 

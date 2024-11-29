@@ -64,8 +64,7 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
 
   const handleOnAltitudeBlur = (_e: React.FocusEvent<HTMLInputElement>) => {
     let num = Number(localAltitude);
-    if (isNaN(num))
-      num = MIN_ALTITUDE_ADDITIONAL_NOTIFICATION;
+    if (isNaN(num)) num = MIN_ALTITUDE_ADDITIONAL_NOTIFICATION;
 
     // Limit the range of the value the user can fill in
     num = clamp(
