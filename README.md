@@ -3,7 +3,7 @@
 
 # Sonoalti 3V/4V WebUSB App
 
-This is a web-based application for configuring the SonoAlti 3V/4V skydiving altimeter using WebUSB. The application allows you to easily import and export your altimeter settings, making it a convenient tool for managing your altimeter configuration.
+This is a web-based application for configuring a SonoAlti 3V/4V skydiving altimeter using WebUSB. The application allows you to easily import and export your altimeter settings, making it a convenient tool for managing your altimeter configuration.
 
 This is an improved version of the [SonoAlti 3V/4V WebUSB App](https://freefalldatasystems.com/sonoalti_3v_web_app) by [Freefall Data Systems](https://freefalldatasystems.com/).
 
