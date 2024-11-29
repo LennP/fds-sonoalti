@@ -34,7 +34,9 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
   isOpen,
   onAfterConnect,
 }) => {
-  const [connectionState, setConnectionState] = useState<[FDSDevice, ConnectionButtonState] | null>(null);
+  const [connectionState, setConnectionState] = useState<
+    [FDSDevice, ConnectionButtonState] | null
+  >(null);
   const [pairedFDSDevices, setPairedFDSDevices] = useState<FDSDevice[]>([]);
 
   const [error, _setError] = useState<string | null>(null);
@@ -44,7 +46,7 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
     _setError(error);
     _setShowError(true);
     setTimeout(() => _setShowError(false), 1000);
-  }
+  };
 
   // Function to fetch FDS devices
   const fetchFDSDevices = async () => {
@@ -118,14 +120,14 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
           </div>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-          <div
-            style={{
-              opacity: showError ? 1 : 0,
-            }}
-            className="text-red-600 text-center font-bold text-sm mb-2 transition-opacity h-3 ease-in-out duration-1000"
-          >
-            {error}
-          </div>
+        <div
+          style={{
+            opacity: showError ? 1 : 0,
+          }}
+          className="text-red-600 text-center font-bold text-sm mb-2 transition-opacity h-3 ease-in-out duration-1000"
+        >
+          {error}
+        </div>
         <div className="mb-1">
           {pairedFDSDevices.length !== 0 && (
             <ul>
@@ -142,29 +144,27 @@ const ConnectDialog: React.FC<ConnectDialogProps> = ({
                     className="flex-1"
                     onClick={() => connect(fdsDevice)}
                     disabled={
-                      connectionState !== null
-                        && [
-                          ConnectionButtonState.CONNECTING,
-                          ConnectionButtonState.LOADING_SETTINGS
-                        ].includes(connectionState[1])
+                      connectionState !== null &&
+                      [
+                        ConnectionButtonState.CONNECTING,
+                        ConnectionButtonState.LOADING_SETTINGS,
+                      ].includes(connectionState[1])
                     }
                     loading={
-                      connectionState !== null
-                      && connectionState[0].device.serialNumber === fdsDevice.device.serialNumber
-                      && [
+                      connectionState !== null &&
+                      connectionState[0].device.serialNumber ===
+                        fdsDevice.device.serialNumber &&
+                      [
                         ConnectionButtonState.CONNECTING,
                         ConnectionButtonState.LOADING_SETTINGS,
                       ].includes(connectionState[1])
                     }
                   >
-                    {
-                      (
-                        connectionState !== null
-                        && connectionState[0].device.serialNumber === fdsDevice.device.serialNumber
-                      )
+                    {connectionState !== null &&
+                    connectionState[0].device.serialNumber ===
+                      fdsDevice.device.serialNumber
                       ? connectionState[1]
-                      : "Connect"
-                    }
+                      : "Connect"}
                   </LoadingButton>
                 </li>
               ))}

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import useSettingsStore from "@/stores/settingsStore";
 import { AdditionalNotification } from "@/types";
+import { clamp } from "@/utils";
 import React, { useEffect, useState } from "react";
 import { FaBell, FaPlay } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
@@ -31,6 +32,9 @@ interface AdditionalNotificationsProps {
   stageAdditionalNotifications: string[];
 }
 
+const MIN_ALTITUDE_ADDITIONAL_NOTIFICATION = 0;
+const MAX_ALTITUDE_ADDITIONAL_NOTIFICATION = 99999;
+
 const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   additionalNotifications,
   onAddNotification,
@@ -41,8 +45,9 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
   const [additionalNotificationOptions, setAdditionalNotificationOptions] =
     useState(stageAdditionalNotifications.sort());
 
-  const [selectedNotification, setSelectedNotification] = useState("");
-  const [altitude, setAltitude] = useState("");
+  const [selectedNotification, setSelectedNotification] = useState<string>("");
+  const [localAltitude, setLocalAltitude] = useState<number>(NaN);
+  const [altitude, setAltitude] = useState<number>(NaN);
 
   const addAdditionalNotification = (
     _: React.MouseEvent<HTMLButtonElement>,
@@ -53,8 +58,22 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         altitude: Number(altitude),
       });
       setSelectedNotification("");
-      setAltitude("");
+      setAltitude(NaN);
     }
+  };
+
+  const handleOnBlur = (_e: React.FocusEvent<HTMLInputElement>) => {
+    let num = localAltitude;
+    console.log(num);
+    // Limit the range of the value the user can fill in
+    if (!isNaN(num))
+      num = clamp(
+        num,
+        MIN_ALTITUDE_ADDITIONAL_NOTIFICATION,
+        MAX_ALTITUDE_ADDITIONAL_NOTIFICATION,
+      );
+    setLocalAltitude(num);
+    setAltitude(num);
   };
 
   useEffect(() => {
@@ -120,8 +139,9 @@ const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
         </Select>
         <Input
           type="number"
-          value={altitude}
-          onChange={(e) => setAltitude(e.target.value)}
+          value={localAltitude}
+          onChange={(e) => setLocalAltitude(parseInt(e.target.value, 10))}
+          onBlur={handleOnBlur}
           placeholder="Altitude"
           className="w-20"
         />
