@@ -97,6 +97,7 @@ function App() {
 
     if (browserIsSupported) {
       navigator.usb.ondisconnect = (event: USBConnectionEvent) => {
+        console.log(`Device physically disconnected (${event.device.serialNumber})`);
         if (
           !deviceRef.current ||
           event.device.serialNumber !== deviceRef.current.device.serialNumber
@@ -105,6 +106,11 @@ function App() {
         setDevice(null);
         deviceRef.current = null;
       };
+      device.onDisconnect = (device: FDSDevice) => {
+        console.log(`Device manually disconnected (${device.device.serialNumber})`);
+        setDevice(null);
+        deviceRef.current = null;
+      }
       device.onReceive = (dataView: DataView) => {
         const data = new TextDecoder().decode(dataView);
         console.log("Received data from device:", data);
@@ -118,7 +124,6 @@ function App() {
         // If end of settings is received, set the device
         if (endOfSettingsReceived) setDevice(device);
       };
-
       device.onReceiveError = (error) => console.error("Receive Error:", error);
     }
   };

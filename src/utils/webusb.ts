@@ -1,11 +1,12 @@
+// webusb.ts
 import { REQUEST_SETTINGS_COMMAND } from "./notifications";
 
-// webusb.ts
 export class FDSDevice {
   device: USBDevice;
   private interfaceNumber: number | null;
   private endpointIn: number | null;
   private endpointOut: number | null;
+  public onDisconnect: ((fdsDevice: FDSDevice) => void) | null;
   public onReceive: ((data: DataView) => void) | null;
   public onReceiveError: ((error: unknown) => void) | null;
 
@@ -14,6 +15,7 @@ export class FDSDevice {
     this.interfaceNumber = null;
     this.endpointIn = null;
     this.endpointOut = null;
+    this.onDisconnect = null; // Callback for disconnect
     this.onReceive = null; // Callback for received data
     this.onReceiveError = null; // Callback for errors
   }
@@ -59,6 +61,7 @@ export class FDSDevice {
   async disconnect(): Promise<void> {
     if (this.interfaceNumber !== null) await this.controlTransferOut(false);
     await this.device.close();
+    this.onDisconnect?.(this);
   }
 
   async send(data: string): Promise<void> {
