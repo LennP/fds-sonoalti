@@ -9,7 +9,7 @@ This is an improved version of the [SonoAlti 3V/4V WebUSB App](https://freefalld
 
 ## Live version
 
-Check out a live version of the app over at [sonoalti.lenn.cc](https://sonoalti.lenn.cc).
+Check out a live version of the app over at [sonoalti.lenn.app](https://sonoalti.lenn.app).
 
 ## Features
 
