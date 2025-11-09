@@ -2,14 +2,13 @@
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { GeneralSettings } from "@/types";
-import React from "react";
 
 interface GeneralProps {
   generalSettings: GeneralSettings;
   onChange: (key: keyof GeneralSettings, value: boolean) => void;
 }
 
-const General: React.FC<GeneralProps> = ({ generalSettings, onChange }) => {
+const General = ({ generalSettings, onChange }: GeneralProps) => {
   const handleInputChange =
     (key: keyof GeneralSettings) => (value: boolean) => {
       onChange(key, value);

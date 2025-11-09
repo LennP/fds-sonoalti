@@ -1,5 +1,4 @@
 // Volume.tsx
-import React from "react";
 import { FaVolumeHigh, FaVolumeLow } from "react-icons/fa6";
 
 interface VolumeControlProps {
@@ -13,7 +12,7 @@ const VOLUME_BLOCKS = Array.from(
   (_, i) => i + 1,
 );
 
-const Volume: React.FC<VolumeControlProps> = ({ value, onChange }) => {
+const Volume = ({ value, onChange }: VolumeControlProps) => {
   return (
     <div className="flex items-center mb-4">
       {VOLUME_BLOCKS.map((block) => (
@@ -23,8 +22,7 @@ const Volume: React.FC<VolumeControlProps> = ({ value, onChange }) => {
             value >= block ? "bg-blue-500" : "bg-gray-300"
           }`}
           style={{
-            borderRight:
-              block < NUMBER_OF_VOLUME_BLOCKS ? "1px solid white" : "",
+            borderRight: block < NUMBER_OF_VOLUME_BLOCKS ? "1px solid white" : "",
           }}
           onClick={() => onChange(block)}
         >

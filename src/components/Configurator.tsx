@@ -32,11 +32,11 @@ interface ConfiguratorProps {
   deblurOnConnect: boolean;
 }
 
-const Configurator: React.FC<ConfiguratorProps> = ({
+const Configurator = ({
   device,
   dialogOpen,
   deblurOnConnect = false,
-}) => {
+}: ConfiguratorProps) => {
   const {
     settings,
     setSettings,
@@ -49,7 +49,7 @@ const Configurator: React.FC<ConfiguratorProps> = ({
   } = useSettingsStore();
 
   const [selectedPreset, setSelectedPreset] = useState<number>(0);
-  const fileInputImportRef = useRef<HTMLInputElement>(null);
+  const fileInputImportRef = useRef<HTMLInputElement | null>(null);
 
   const handleSettingsImport = async (
     event: React.ChangeEvent<HTMLInputElement>,

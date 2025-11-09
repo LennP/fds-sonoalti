@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { clamp } from "@/utils";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaMountain } from "react-icons/fa";
 
 interface AltitudeRangeProps {
@@ -21,12 +21,12 @@ interface AltitudeRangeProps {
 const MIN_ALTITUDE: number = 0;
 const MAX_ALTITUDE: number = 30000;
 
-const AltitudeRange: React.FC<AltitudeRangeProps> = ({
+const AltitudeRange = ({
   fromValue,
   toValue,
   fromOnChange: onFromChange,
   toOnChange: onToChange,
-}) => {
+}: AltitudeRangeProps) => {
   const [focus, setFocus] = useState(false);
 
   // Local state for input fields

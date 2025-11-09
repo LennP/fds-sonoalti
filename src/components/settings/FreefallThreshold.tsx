@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { clamp } from "@/utils";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GiFalling } from "react-icons/gi";
 
 interface FreefallThresholdProps {
@@ -19,10 +19,10 @@ interface FreefallThresholdProps {
 const MIN_FREEFALL_THRESHOLD: number = 0;
 const MAX_FREEFALL_THRESHOLD: number = 999;
 
-const FreefallThreshold: React.FC<FreefallThresholdProps> = ({
+const FreefallThreshold = ({
   freefallThreshold,
   onFreefallThresholdChange,
-}) => {
+}: FreefallThresholdProps) => {
   const [focus, setFocus] = useState(false);
 
   const [localThreshold, setLocalThreshold] = useState<string>(

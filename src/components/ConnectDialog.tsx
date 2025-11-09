@@ -11,7 +11,7 @@ import {
   getPairedFDSDevices,
   requestFDSDevice,
 } from "@/utils/webusb";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUsb } from "react-icons/fa6";
 import { Button } from "./ui/button";
 import { LoadingButton } from "./ui/loading-button";
@@ -32,11 +32,11 @@ interface ConnectDialogProps {
 const DEVICE_SCAN_INTERVAL: number = 200; // milliseconds
 const CHECK_RECEIVING_SETTINGS_TIMEOUT = 1000; // milliseconds
 
-const ConnectDialog: React.FC<ConnectDialogProps> = ({
+const ConnectDialog = ({
   isOpen,
   receivingSettings,
   onAfterConnect,
-}) => {
+}: ConnectDialogProps) => {
   const [connectionState, setConnectionState] = useState<
     [FDSDevice, ConnectionButtonState] | null
   >(null);

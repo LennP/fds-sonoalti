@@ -35,13 +35,13 @@ interface AdditionalNotificationsProps {
 const MIN_ALTITUDE_ADDITIONAL_NOTIFICATION = 0;
 const MAX_ALTITUDE_ADDITIONAL_NOTIFICATION = 99999;
 
-const AdditionalNotifications: React.FC<AdditionalNotificationsProps> = ({
+const AdditionalNotifications = ({
   additionalNotifications,
   onAddNotification,
   onRemoveNotification,
   onPlayNotification,
   stageAdditionalNotifications,
-}) => {
+}: AdditionalNotificationsProps) => {
   const [additionalNotificationOptions, setAdditionalNotificationOptions] =
     useState(stageAdditionalNotifications.sort());
 

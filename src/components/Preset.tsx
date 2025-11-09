@@ -48,7 +48,7 @@ interface StageConfig {
   id: StageSettingsID;
   icon: React.ReactElement;
   stageName: StageName;
-  stageAdditionalNotifications: any; // Adjust the type based on your notification options
+  stageAdditionalNotifications: any;
   speedLabel: string;
   settingsKey: StageSettingsID;
 }
@@ -80,7 +80,7 @@ const STAGES: StageConfig[] = [
   },
 ];
 
-const Preset: React.FC<PresetProps> = ({
+const Preset = ({
   presetNumber,
   presetSettings,
   onPresetChange,
@@ -88,48 +88,46 @@ const Preset: React.FC<PresetProps> = ({
   onPresetStageAddNotification,
   onPresetStageRemoveNotification,
   onPlayNotification,
-}) => {
-  return (
-    <div className="bg-white shadow-lg rounded-xl overflow-hidden">
-      <div className="w-full h-16 flex flex-col justify-center items-center bg-[#252727] text-white">
-        <h1 className="text-2xl font-bold text-center">
-          Preset {presetNumber}
-        </h1>
-      </div>
-
-      {/* Preset-level settings */}
-      <div className="px-6 py-4">
-        <DropzoneOffset
-          dropzoneOffset={presetSettings.dropzoneOffset}
-          onChange={(offset: number) =>
-            onPresetChange("dropzoneOffset", offset)
-          }
-        />
-      </div>
-
-      {/* Stages */}
-      {STAGES.map((stage) => (
-        <Section key={stage.id} title={stage.stageName} icon={stage.icon}>
-          <Stage
-            stageName={stage.stageName}
-            stageSettings={presetSettings[stage.settingsKey]}
-            onPresetStageChange={(key, value) =>
-              onPresetStageChange(stage.id, key, value)
-            }
-            onPresetStageAddNotification={(additionalNotification) =>
-              onPresetStageAddNotification(stage.id, additionalNotification)
-            }
-            onPresetStageRemoveNotification={(additionalNotification) =>
-              onPresetStageRemoveNotification(stage.id, additionalNotification)
-            }
-            onPlayNotification={onPlayNotification}
-            stageAdditionalNotifications={stage.stageAdditionalNotifications}
-            speedLabel={stage.speedLabel}
-          />
-        </Section>
-      ))}
+}: PresetProps) => (
+  <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className="w-full h-16 flex flex-col justify-center items-center bg-[#252727] text-white">
+      <h1 className="text-2xl font-bold text-center">
+        Preset {presetNumber}
+      </h1>
     </div>
-  );
-};
+
+    {/* Preset-level settings */}
+    <div className="px-6 py-4">
+      <DropzoneOffset
+        dropzoneOffset={presetSettings.dropzoneOffset}
+        onChange={(offset: number) =>
+          onPresetChange("dropzoneOffset", offset)
+        }
+      />
+    </div>
+
+    {/* Stages */}
+    {STAGES.map((stage) => (
+      <Section key={stage.id} title={stage.stageName} icon={stage.icon}>
+        <Stage
+          stageName={stage.stageName}
+          stageSettings={presetSettings[stage.settingsKey]}
+          onPresetStageChange={(key, value) =>
+            onPresetStageChange(stage.id, key, value)
+          }
+          onPresetStageAddNotification={(additionalNotification) =>
+            onPresetStageAddNotification(stage.id, additionalNotification)
+          }
+          onPresetStageRemoveNotification={(additionalNotification) =>
+            onPresetStageRemoveNotification(stage.id, additionalNotification)
+          }
+          onPlayNotification={onPlayNotification}
+          stageAdditionalNotifications={stage.stageAdditionalNotifications}
+          speedLabel={stage.speedLabel}
+        />
+      </Section>
+    ))}
+  </div>
+);
 
 export default Preset;

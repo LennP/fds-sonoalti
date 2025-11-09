@@ -1,8 +1,7 @@
-// components/DropzoneOffset.tsx
-
-import { Input } from "@/components/ui/input"; // Adjust the import path based on your project structure
+// DropzoneOffset.tsx
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clamp } from "@/utils"; // Ensure you have a clamp utility or define it below
+import { clamp } from "@/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -19,10 +18,7 @@ interface DropzoneOffsetProps {
 const MIN_OFFSET = -99999;
 const MAX_OFFSET = 99999;
 
-const DropzoneOffset: React.FC<DropzoneOffsetProps> = ({
-  dropzoneOffset,
-  onChange,
-}) => {
+const DropzoneOffset = ({ dropzoneOffset, onChange }: DropzoneOffsetProps) => {
   const [focus, setFocus] = useState(false);
   const [localOffset, setLocalOffset] = useState<number>(dropzoneOffset);
 
